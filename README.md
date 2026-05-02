@@ -1,6 +1,7 @@
 # Sync or Sink — Stability Tradeoffs in Synchronous and Asynchronous RLHF
 
 Study of PPO training stability under two sources of drift in actor-learner RLHF pipelines:
+
 1. **Policy staleness** — actors generating rollouts from stale checkpoints (lag L)
 2. **Log-probability mismatch** — numerical drift between fp16 inference and fp32 training backends
 
@@ -17,6 +18,7 @@ bash setup_env.sh
 ```
 
 This will:
+
 - Install `uv` if not present
 - Create `.venv` with Python 3.10
 - Install all dependencies (torch cu121, transformers 4.46.3, trl 0.12.2, peft, datasets, etc.)
@@ -36,7 +38,9 @@ source .venv/bin/activate
 
 ```bash
 salloc -A cse -q coc-ice -N 1 --gpus=1 -t 1:00:00
-# Requests 1 GPU for 1 hour on coc-ice partition
+# Requests 1 GPU for 1 hour on coc-ice partition and billed to the cse account
+salloc -A coc -q coc-ice -N 1 --gpus=1 --constraint=gpu-l40s -t 1:00:00
+# Requests 1 L40S GPU for 1 hour on coc-ice partition and billed to the coc account
 ```
 
 Once allocated, activate the environment and run scripts directly:
@@ -87,6 +91,7 @@ sbatch jobs/run_dpo_baseline.sbatch
 ```
 
 Outputs:
+
 - `outputs/figures/dpo_loss_curve.png`
 - `outputs/logs/dpo_baseline_logs.json`
 
@@ -100,6 +105,7 @@ sbatch jobs/run_logprob_parity.sbatch
 ```
 
 Outputs:
+
 - `outputs/figures/logprob_drift_histogram.png`
 - `outputs/logs/logprob_parity_stats.json`
 
@@ -117,6 +123,7 @@ Checkpoints are saved to `outputs/checkpoints/`. Subsequent runs skip SFT traini
 and load from disk automatically.
 
 Outputs:
+
 - `outputs/figures/staleness_kl_clip.png`
 - `outputs/figures/staleness_ratio_variance.png`
 - `outputs/logs/staleness_stats.json`
@@ -132,6 +139,7 @@ python scripts/plot_pipeline.py
 ```
 
 Output:
+
 - `outputs/figures/pipeline_diagram.png`
 
 ---

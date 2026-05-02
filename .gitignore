@@ -3,3 +3,4 @@ outputs/
 latex/
 tmp/
 extra_information/
+scripts/__pycache__/

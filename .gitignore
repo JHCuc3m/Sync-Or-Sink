@@ -4,3 +4,4 @@ latex/
 tmp/
 extra_information/
 scripts/__pycache__/
+data/

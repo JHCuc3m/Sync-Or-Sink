@@ -1,98 +1,131 @@
 # Final Project TODO List
 
-Goal: Build a clean, reproducible live PPO/RLVR harness, run small staleness and
-mismatch sweeps, validate fp32 rescoring as the primary mitigation, and write the
-final report. Scoped to single-process simulation at GPT-2 scale — no distributed
-actor/learner or vLLM integration required for the core results.
+Goal: Build a clean, reproducible live PPO/RLVR harness on WikiSQL text-to-SQL with
+execution reward, run staleness sweeps, and validate the stability degradation hypothesis.
+Scoped to single-process simulation at GPT-2 scale.
 
-Builds on milestone results: DPO baseline, logprob parity test, and
-simulated staleness test are already done.
-
----
-
-## 0. Pre-Sweep Infrastructure
-
-- [ ] Add per-condition/seed output subdirectories so runs do not overwrite `outputs/logs/` and `outputs/figures/`
-- [ ] Add a new PACE job template under `jobs/` for the live PPO harness
-- [ ] Replace hardcoded cluster paths in `.sbatch` files with `$SLURM_SUBMIT_DIR` or document the expected path
-
-Goal: reproducible multi-run sweeps without manual output management.
+Builds on milestone results: DPO baseline, logprob parity test, and simulated staleness
+test are already done. Live PPO harness infrastructure exists but needs WikiSQL task.
 
 ---
 
-## 1. Live PPO Harness + Verifiable Task (Phase 1)
+## 0. Pre-Sweep Infrastructure (DONE)
 
-- [ ] Create `scripts/live_ppo_rlvr.py` with CLI flags: `--condition`, `--lag`, `--seed`, `--updates`, `--task`, `--output_dir`
-- [ ] Implement deterministic verifiable reward task — JSON extraction or regex-constrained formatting (not arithmetic)
-- [ ] Log at every update step: reward mean, pass@1, clip fraction, KL proxy, entropy, ratio mean/variance, advantage mean/std
-- [ ] Run sync baseline (L=0, fp32 consistent) and confirm stable training
-
-Goal: clean reference point with L=0 and no backend mismatch; foundation for all sweeps.
+- [x] Add per-condition/seed output subdirectories
+- [x] Add PACE job template for live PPO harness (`jobs/run_live_ppo_rlvr.sbatch`)
+- [x] Implement all experimental conditions: sync, stale, mismatch, rescored, stale_mismatch
+- [ ] Replace hardcoded cluster paths in `.sbatch` files (low priority, documented workaround)
 
 ---
 
-## 2. Staleness Sweep (Phase 2 — H2)
+## 1. WikiSQL Task + SFT Warm-Start (Phase 1)
 
-- [ ] Simulate actor staleness in single-process: use rollout logprobs from a delayed policy snapshot
-- [ ] Run live PPO with L ∈ {0, 1, 2, 4}; optionally L=8 if runs are stable and cheap
-- [ ] Collect KL proxy, clip fraction, ratio variance, reward/pass@1 curves per L
-- [ ] Plot: stability metrics vs L, reward curve vs L
+### Why WikiSQL over JSON
 
-Goal: show larger lag increases clip fraction, KL proxy, and ratio variance in live training.
+The synthetic JSON task lacks grounding. WikiSQL provides:
+- Real dataset with RL precedent (Seq2SQL used policy gradient + execution reward)
+- Verifiable execution reward (run SQL against SQLite, compare to gold result)
+- Appropriate difficulty for GPT-2 (single-table queries, simple grammar)
+- Better publication credibility
+
+### Implementation
+
+- [ ] Add WikiSQL data loading (HuggingFace `wikisql` dataset)
+- [ ] Implement prompt template: `Question: {nl} | Table: {schema} | SQL:`
+- [ ] Implement SQLite execution for reward computation:
+  - 1.0 if generated SQL executes to same answer as gold SQL
+  - 0.5 if SQL parses and executes but wrong answer
+  - 0.1 if valid SQL syntax but execution error/empty result
+  - 0.0 if invalid SQL (parse error)
+- [ ] Create `scripts/sft_wikisql.py` for supervised warm-start on gold SQL
+- [ ] Update `scripts/live_ppo_rlvr.py` to support WikiSQL task alongside JSON
+- [ ] Run SFT warm-start: ~500-1000 steps on train split subset
+
+### Data splits
+
+- Train prompts: 500–2,000 examples (subset of WikiSQL train)
+- Eval prompts: 100–200 examples (fixed eval set)
+
+Goal: SFT model that can produce valid SQL most of the time, providing a foundation for PPO.
 
 ---
 
-## 3. Mismatch and Rescoring (Phase 3 — H1)
+## 2. Sync PPO Baseline (Phase 2)
 
-Run three conditions against the sync baseline:
+- [ ] Run sync PPO (L=0, fp32 consistent) from SFT checkpoint
+- [ ] Confirm stable training: reward improves, execution accuracy increases
+- [ ] Verify metrics are logged correctly: execution accuracy, valid SQL rate, clip fraction, entropy
+
+Goal: clean reference point before introducing drift.
+
+---
+
+## 3. Staleness Sweep (Phase 3 — H2)
+
+- [ ] Run live PPO with L ∈ {0, 1, 2, 4}; optionally L=8 if stable
+- [ ] Collect per-lag metrics:
+  - Execution accuracy curve
+  - Valid SQL rate
+  - Post-update clip fraction
+  - Post-update ratio variance
+  - Post-update abs logprob movement
+  - Entropy
+- [ ] Plot: stability metrics vs L, execution accuracy vs L
+
+Goal: show larger lag increases clip fraction, ratio variance, and degrades execution accuracy.
+
+---
+
+## 4. Mismatch and Rescoring (Phase 4 — H1)
+
+Run three conditions against sync baseline:
 
 - [ ] **control**: consistent fp32 logprobs throughout
-- [ ] **mismatch**: actor-side fp16 logprobs used directly in PPO ratios
-- [ ] **rescored**: actor generates responses with fp16, but learner recomputes old logprobs in fp32 before PPO update
-- [ ] Compare clip fraction, KL proxy, and reward/pass@1 curves across all three
-- [ ] Plot: training curves and clip fractions for control vs mismatch vs rescored
+- [ ] **mismatch**: actor-side fp16 logprobs used in PPO ratios
+- [ ] **rescored**: fp16 actor generates SQL, learner recomputes old logprobs in fp32
+- [ ] Compare clip fraction, ratio variance, and execution accuracy across all three
+- [ ] Plot: training curves for control vs mismatch vs rescored
 
-Goal: show fp16/fp32 mismatch causes spurious clipping, and learner-side rescoring recovers stability.
-
----
-
-## 4. Replication (Phase 4)
-
-- [ ] Re-run the core conditions (sync, L=2, L=4, mismatch, mismatch+rescored) over seeds 0, 1, 2
-- [ ] Report mean ± std for key metrics across seeds
-
-Goal: prefer replication over additional one-off conditions.
+Goal: show fp16/fp32 mismatch causes spurious clipping, rescoring recovers stability.
 
 ---
 
-## 5. Final Report
+## 5. Replication (Phase 5)
 
-- [ ] Frame narrative: static proxy evidence (milestone) → live PPO validation → rescoring mitigation
-- [ ] Key result: PPO stability metrics degrade predictably with lag/mismatch; rescoring recovers stability (pass@1 gains are secondary)
-- [ ] Expand technical approach with harness description and single-process staleness simulation design
-- [ ] Add Phase 2 staleness results (H2) and Phase 3 mismatch/rescoring results (H1)
+- [ ] Re-run core conditions (sync, L=2, L=4, mismatch, rescored) over seeds 0, 1, 2
+- [ ] Report mean ± std for key metrics
+
+Goal: statistical credibility over breadth.
+
+---
+
+## 6. Final Report
+
+- [ ] Frame narrative: static proxy evidence (milestone) → WikiSQL RLVR → stability analysis
+- [ ] Describe SFT warm-start methodology
+- [ ] Present staleness results (H2): clip fraction and execution accuracy vs lag
+- [ ] Present mismatch/rescoring results (H1): rescoring as mitigation
 - [ ] Add replication summary (seed variance)
-- [ ] Update related work if needed; write conclusion
+- [ ] Cite Seq2SQL and WikiSQL as task precedent
 - [ ] Format to ICLR template, ≤ 8 pages + references
-- [ ] Proofread and submit
 
 ---
 
-## Stretch Goals (only after core results exist)
+## Stretch Goals
 
-- Combined `stale + mismatch` condition for H3 (2×2 grid: sync/async × matched/mismatched)
-- Second verifiable task if JSON is too easy or too noisy
-- Static vLLM-vs-HF logprob parity experiment before attempting full vLLM actor rollouts
-- V-trace importance-weight clipping or KL-adaptive clip threshold as additional mitigations
+- Combined `stale + mismatch` condition for H3 (2×2 grid)
+- Exact SQL match metric (stricter than execution accuracy)
+- Spider subset as harder benchmark (future work mention)
+- V-trace or KL-adaptive clip as additional mitigations
 
 ---
 
 ## Priority Order
 
-1. Pre-sweep infrastructure (blocks reproducible sweeps)
-2. Live PPO harness + verifiable task (blocks everything else)
-3. Staleness sweep — L ∈ {0, 1, 2, 4} (H2, core contribution)
+1. WikiSQL task + SFT warm-start (blocks everything)
+2. Sync PPO baseline (validates harness works)
+3. Staleness sweep L ∈ {0, 1, 2, 4} (H2, core contribution)
 4. Mismatch and rescoring (H1, core contribution)
 5. Replication over seeds
 6. Final report
-7. Stretch: combined H3 evaluation, vLLM parity, additional mitigations
+7. Stretch goals

@@ -1,0 +1,10 @@
+{
+  "model_id": "gpt2",
+  "max_steps": 500,
+  "batch_size": 4,
+  "lr": 5e-05,
+  "max_length": 256,
+  "num_train_examples": 2000,
+  "seed": 42,
+  "table_name": "t"
+}

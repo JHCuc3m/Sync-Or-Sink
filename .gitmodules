@@ -1,0 +1,3 @@
+[submodule "docs/overleaf"]
+	path = docs/overleaf
+	url = git@github.com:JHCuc3m/Sync_Or_Sink_Overleaf.git

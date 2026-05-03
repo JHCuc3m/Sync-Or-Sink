@@ -3,6 +3,7 @@
 #SBATCH -q coc-ice
 #SBATCH -N 1
 #SBATCH --gpus=1
+#SBATCH --constraint=gpu-a100
 #SBATCH --mem=16G
 #SBATCH -t 1:00:00
 #SBATCH -J live_ppo_rlvr

@@ -3,6 +3,7 @@
 #SBATCH -q coc-ice
 #SBATCH -N 1
 #SBATCH --gpus=1
+#SBATCH --constraint=gpu-a100
 #SBATCH --mem=16G
 #SBATCH -t 0:45:00
 #SBATCH -J staleness_test

@@ -1,7 +1,7 @@
 .venv/
-outputs/
 latex/
 tmp/
 extra_information/
 scripts/__pycache__/
 data/
+outputs/milestones

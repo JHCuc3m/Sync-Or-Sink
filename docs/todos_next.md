@@ -1,11 +1,13 @@
 # Final Project TODO List
 
-Goal: Build a clean, reproducible live PPO/RLVR harness on WikiSQL text-to-SQL with
+**Goal:** Build a clean, reproducible live PPO/RLVR harness on WikiSQL text-to-SQL with
 execution reward, run staleness sweeps, and validate the stability degradation hypothesis.
 Scoped to single-process simulation at GPT-2 scale.
 
-Builds on milestone results: DPO baseline, logprob parity test, and simulated staleness
-test are already done. Live PPO harness infrastructure exists but needs WikiSQL task.
+**Current status:** WikiSQL utilities and SFT warm-start script are complete. Next step is
+to run SFT training and integrate WikiSQL into the live PPO harness.
+
+**Milestone results (complete):** DPO baseline, logprob parity test, simulated staleness test.
 
 ---
 
@@ -18,7 +20,7 @@ test are already done. Live PPO harness infrastructure exists but needs WikiSQL 
 
 ---
 
-## 1. WikiSQL Task + SFT Warm-Start (Phase 1)
+## 1. WikiSQL Task + SFT Warm-Start (Phase 1) — IN PROGRESS
 
 ### Why WikiSQL over JSON
 
@@ -30,24 +32,28 @@ The synthetic JSON task lacks grounding. WikiSQL provides:
 
 ### Implementation
 
-- [x] Download WikiSQL data → `scripts/download_wikisql.sh` (downloads to `data/data/`)
-- [x] Add WikiSQL data loading → `scripts/wikisql_utils.py` (`WikiSQLDataset` class, `load_tables()`, `load_examples()`)
-- [x] Implement prompt template → `scripts/wikisql_utils.py` (`build_prompt()` with col0:ColumnName mapping)
-- [x] Implement SQLite execution for reward computation → `scripts/wikisql_utils.py` (`score_sql_execution()`)
-  - 1.0 if generated SQL executes to same answer as gold SQL
-  - 0.5 if SQL parses and executes but wrong answer
-  - 0.1 if valid SQL syntax but execution error/empty result
-  - 0.0 if invalid SQL (parse error)
-- [ ] Create `scripts/sft_wikisql.py` for supervised warm-start on gold SQL
-- [ ] Update `scripts/live_ppo_rlvr.py` to support WikiSQL task alongside JSON
-- [ ] Run SFT warm-start: ~500-1000 steps on train split subset
+| Status | Task | File |
+|--------|------|------|
+| ✅ | Download WikiSQL data | `scripts/download_wikisql.sh` → `data/data/` |
+| ✅ | WikiSQL data loading | `scripts/wikisql_utils.py` (`WikiSQLDataset` class) |
+| ✅ | Prompt template | `scripts/wikisql_utils.py` (`build_prompt()`) |
+| ✅ | SQLite execution reward | `scripts/wikisql_utils.py` (`score_sql_execution()`) |
+| ✅ | SFT warm-start script | `scripts/sft_wikisql.py`, `jobs/run_sft_wikisql.sbatch` |
+| ⬜ | Integrate WikiSQL into live PPO | `scripts/live_ppo_rlvr.py` (add `--task wikisql`) |
+| ⬜ | Run SFT warm-start | `sbatch jobs/run_sft_wikisql.sbatch` |
+
+**Reward structure:**
+- 1.0 = generated SQL executes to same answer as gold
+- 0.5 = valid SQL, executes, wrong answer
+- 0.1 = valid SQL syntax, execution error
+- 0.0 = invalid SQL (parse error)
 
 ### Data splits
 
-- Train prompts: 500–2,000 examples (subset of WikiSQL train)
-- Eval prompts: 100–200 examples (fixed eval set)
+- Train: 2,000 examples (subset of WikiSQL train, 56K total)
+- Eval: 200 examples (from WikiSQL dev, 8K total)
 
-Goal: SFT model that can produce valid SQL most of the time, providing a foundation for PPO.
+**Goal:** SFT model that produces valid SQL most of the time, providing foundation for PPO.
 
 ---
 
@@ -124,11 +130,12 @@ Goal: statistical credibility over breadth.
 ## Priority Order
 
 1. ~~WikiSQL data + utilities~~ ✅ `scripts/wikisql_utils.py`, `scripts/download_wikisql.sh`
-2. SFT warm-start script (next)
-3. Integrate WikiSQL into live PPO harness
-4. Sync PPO baseline (validates harness works)
-5. Staleness sweep L ∈ {0, 1, 2, 4} (H2, core contribution)
-6. Mismatch and rescoring (H1, core contribution)
-7. Replication over seeds
-8. Final report
-9. Stretch goals
+2. ~~SFT warm-start script~~ ✅ `scripts/sft_wikisql.py`, `jobs/run_sft_wikisql.sbatch`
+3. Run SFT warm-start: `sbatch jobs/run_sft_wikisql.sbatch` (next)
+4. Integrate WikiSQL into live PPO harness
+5. Sync PPO baseline (validates harness works)
+6. Staleness sweep L ∈ {0, 1, 2, 4} (H2, core contribution)
+7. Mismatch and rescoring (H1, core contribution)
+8. Replication over seeds
+9. Final report
+10. Stretch goals

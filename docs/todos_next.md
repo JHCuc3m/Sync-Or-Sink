@@ -1,109 +1,98 @@
 # Final Project TODO List
 
-Goal: Complete full actor–learner PPO pipeline, run drift and mitigation
-experiments, evaluate on verifiable tasks, and write the final report.
+Goal: Build a clean, reproducible live PPO/RLVR harness, run small staleness and
+mismatch sweeps, validate fp32 rescoring as the primary mitigation, and write the
+final report. Scoped to single-process simulation at GPT-2 scale — no distributed
+actor/learner or vLLM integration required for the core results.
 
 Builds on milestone results: DPO baseline, logprob parity test, and
 simulated staleness test are already done.
 
 ---
 
-## 1. Synchronous PPO Baseline
+## 0. Pre-Sweep Infrastructure
 
-- [ ] Implement PPO training loop (TRL PPOTrainer or custom)
-- [ ] Define reward function (verifiable task or preference score)
-- [ ] Train on chosen task, log KL / clip fraction / entropy / reward
-- [ ] Compare stability metrics against DPO baseline
+- [ ] Add per-condition/seed output subdirectories so runs do not overwrite `outputs/logs/` and `outputs/figures/`
+- [ ] Add a new PACE job template under `jobs/` for the live PPO harness
+- [ ] Replace hardcoded cluster paths in `.sbatch` files with `$SLURM_SUBMIT_DIR` or document the expected path
 
-Goal: clean reference point with L=0 and no backend mismatch.
-
----
-
-## 2. Verifiable Reward Task Setup
-
-- [ ] Choose task (JSON format validation, regex check, or similar)
-- [ ] Implement deterministic reward function (pass/fail → scalar)
-- [ ] Build prompt/dataset for the task
-- [ ] Verify reward signal is low-variance and reproducible
-
-Goal: enables H3 evaluation (task success rate / pass@1).
+Goal: reproducible multi-run sweeps without manual output management.
 
 ---
 
-## 3. Full Actor–Learner Pipeline
+## 1. Live PPO Harness + Verifiable Task (Phase 1)
 
-- [ ] Implement replay buffer with version tags
-- [ ] Decouple rollout generation from policy update
-- [ ] Implement actor refresh logic (reload weights every K learner steps)
-- [ ] Run pipeline end-to-end and confirm training is stable at L=0
+- [ ] Create `scripts/live_ppo_rlvr.py` with CLI flags: `--condition`, `--lag`, `--seed`, `--updates`, `--task`, `--output_dir`
+- [ ] Implement deterministic verifiable reward task — JSON extraction or regex-constrained formatting (not arithmetic)
+- [ ] Log at every update step: reward mean, pass@1, clip fraction, KL proxy, entropy, ratio mean/variance, advantage mean/std
+- [ ] Run sync baseline (L=0, fp32 consistent) and confirm stable training
 
-Goal: working async pipeline as the foundation for drift experiments.
+Goal: clean reference point with L=0 and no backend mismatch; foundation for all sweeps.
 
 ---
 
-## 4. Staleness Drift Experiments (H2)
+## 2. Staleness Sweep (Phase 2 — H2)
 
-- [ ] Run PPO with lag L ∈ {0, 1, 2, 4} learner updates
-- [ ] Collect KL, clip fraction, entropy, reward curves per L
-- [ ] Compare reward curves and stability metrics across L values
+- [ ] Simulate actor staleness in single-process: use rollout logprobs from a delayed policy snapshot
+- [ ] Run live PPO with L ∈ {0, 1, 2, 4}; optionally L=8 if runs are stable and cheap
+- [ ] Collect KL proxy, clip fraction, ratio variance, reward/pass@1 curves per L
 - [ ] Plot: stability metrics vs L, reward curve vs L
 
-Goal: quantify how staleness degrades live PPO training.
+Goal: show larger lag increases clip fraction, KL proxy, and ratio variance in live training.
 
 ---
 
-## 5. Backend Mismatch Experiments (H1)
+## 3. Mismatch and Rescoring (Phase 3 — H1)
 
-- [ ] Run PPO with fp16 actor logprobs vs fp32 learner logprobs
-- [ ] Run PPO with consistent fp32 logprobs (control)
-- [ ] Compare clip fraction, KL, and reward curves between conditions
-- [ ] Plot: drift histogram and training curves side by side
+Run three conditions against the sync baseline:
 
-Goal: show backend mismatch causes spurious clipping in live training.
+- [ ] **control**: consistent fp32 logprobs throughout
+- [ ] **mismatch**: actor-side fp16 logprobs used directly in PPO ratios
+- [ ] **rescored**: actor generates responses with fp16, but learner recomputes old logprobs in fp32 before PPO update
+- [ ] Compare clip fraction, KL proxy, and reward/pass@1 curves across all three
+- [ ] Plot: training curves and clip fractions for control vs mismatch vs rescored
 
----
-
-## 6. Combined Drift + Task Evaluation (H3)
-
-- [ ] Run experiments combining staleness + backend mismatch
-- [ ] Measure task success rate (pass@1) under each condition
-- [ ] Compare: sync vs async × consistent vs mismatched backends
-- [ ] Plot: 2×2 grid of task success rate vs training step
-
-Goal: link stability metrics to downstream task performance.
+Goal: show fp16/fp32 mismatch causes spurious clipping, and learner-side rescoring recovers stability.
 
 ---
 
-## 7. Mitigation Experiments
+## 4. Replication (Phase 4)
 
-- [ ] Mitigation A: recompute logprobs in fp32 at training time
-- [ ] Mitigation B: V-trace importance-weight clipping (IMPALA-style)
-- [ ] Mitigation C: KL-adaptive clip threshold
-- [ ] Evaluate each mitigation against unmitigated baseline
-- [ ] Plot: reward curves and clip fractions with vs without mitigation
+- [ ] Re-run the core conditions (sync, L=2, L=4, mismatch, mismatch+rescored) over seeds 0, 1, 2
+- [ ] Report mean ± std for key metrics across seeds
 
-Goal: show at least one mitigation recovers stability.
+Goal: prefer replication over additional one-off conditions.
 
 ---
 
-## 8. Final Report
+## 5. Final Report
 
-- [ ] Expand technical approach with full pipeline description
-- [ ] Add PPO experiment results (H1, H2, H3 sections)
-- [ ] Add mitigation results section
-- [ ] Update related work if needed
-- [ ] Write conclusion summarizing findings
+- [ ] Frame narrative: static proxy evidence (milestone) → live PPO validation → rescoring mitigation
+- [ ] Key result: PPO stability metrics degrade predictably with lag/mismatch; rescoring recovers stability (pass@1 gains are secondary)
+- [ ] Expand technical approach with harness description and single-process staleness simulation design
+- [ ] Add Phase 2 staleness results (H2) and Phase 3 mismatch/rescoring results (H1)
+- [ ] Add replication summary (seed variance)
+- [ ] Update related work if needed; write conclusion
 - [ ] Format to ICLR template, ≤ 8 pages + references
 - [ ] Proofread and submit
 
 ---
 
+## Stretch Goals (only after core results exist)
+
+- Combined `stale + mismatch` condition for H3 (2×2 grid: sync/async × matched/mismatched)
+- Second verifiable task if JSON is too easy or too noisy
+- Static vLLM-vs-HF logprob parity experiment before attempting full vLLM actor rollouts
+- V-trace importance-weight clipping or KL-adaptive clip threshold as additional mitigations
+
+---
+
 ## Priority Order
 
-1. Synchronous PPO baseline (needed before everything else)
-2. Verifiable task setup (needed for H3)
-3. Full pipeline + staleness experiments (H2, core contribution)
-4. Backend mismatch in live PPO (H1, core contribution)
-5. Combined evaluation + task success (H3)
-6. Mitigation experiments
-7. Final report
+1. Pre-sweep infrastructure (blocks reproducible sweeps)
+2. Live PPO harness + verifiable task (blocks everything else)
+3. Staleness sweep — L ∈ {0, 1, 2, 4} (H2, core contribution)
+4. Mismatch and rescoring (H1, core contribution)
+5. Replication over seeds
+6. Final report
+7. Stretch: combined H3 evaluation, vLLM parity, additional mitigations

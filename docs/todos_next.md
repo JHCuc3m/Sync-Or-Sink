@@ -11,9 +11,9 @@ test are already done. Live PPO harness infrastructure exists but needs WikiSQL 
 
 ## 0. Pre-Sweep Infrastructure (DONE)
 
-- [x] Add per-condition/seed output subdirectories
-- [x] Add PACE job template for live PPO harness (`jobs/run_live_ppo_rlvr.sbatch`)
-- [x] Implement all experimental conditions: sync, stale, mismatch, rescored, stale_mismatch
+- [x] Add per-condition/seed output subdirectories → `scripts/live_ppo_rlvr.py` outputs to `outputs/live_ppo/<run_name>/`
+- [x] Add PACE job template for live PPO harness → `jobs/run_live_ppo_rlvr.sbatch`
+- [x] Implement all experimental conditions: sync, stale, mismatch, rescored, stale_mismatch → `scripts/live_ppo_rlvr.py`
 - [ ] Replace hardcoded cluster paths in `.sbatch` files (low priority, documented workaround)
 
 ---
@@ -30,9 +30,10 @@ The synthetic JSON task lacks grounding. WikiSQL provides:
 
 ### Implementation
 
-- [ ] Add WikiSQL data loading (HuggingFace `wikisql` dataset)
-- [ ] Implement prompt template: `Question: {nl} | Table: {schema} | SQL:`
-- [ ] Implement SQLite execution for reward computation:
+- [x] Download WikiSQL data → `scripts/download_wikisql.sh` (downloads to `data/data/`)
+- [x] Add WikiSQL data loading → `scripts/wikisql_utils.py` (`WikiSQLDataset` class, `load_tables()`, `load_examples()`)
+- [x] Implement prompt template → `scripts/wikisql_utils.py` (`build_prompt()` with col0:ColumnName mapping)
+- [x] Implement SQLite execution for reward computation → `scripts/wikisql_utils.py` (`score_sql_execution()`)
   - 1.0 if generated SQL executes to same answer as gold SQL
   - 0.5 if SQL parses and executes but wrong answer
   - 0.1 if valid SQL syntax but execution error/empty result
@@ -122,10 +123,12 @@ Goal: statistical credibility over breadth.
 
 ## Priority Order
 
-1. WikiSQL task + SFT warm-start (blocks everything)
-2. Sync PPO baseline (validates harness works)
-3. Staleness sweep L ∈ {0, 1, 2, 4} (H2, core contribution)
-4. Mismatch and rescoring (H1, core contribution)
-5. Replication over seeds
-6. Final report
-7. Stretch goals
+1. ~~WikiSQL data + utilities~~ ✅ `scripts/wikisql_utils.py`, `scripts/download_wikisql.sh`
+2. SFT warm-start script (next)
+3. Integrate WikiSQL into live PPO harness
+4. Sync PPO baseline (validates harness works)
+5. Staleness sweep L ∈ {0, 1, 2, 4} (H2, core contribution)
+6. Mismatch and rescoring (H1, core contribution)
+7. Replication over seeds
+8. Final report
+9. Stretch goals

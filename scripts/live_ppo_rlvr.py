@@ -1,8 +1,9 @@
 """
-Live PPO/RLVR harness for structured JSON extraction tasks.
+Live PPO/RLVR harness for structured generation tasks.
 
-This script is intentionally self-contained so we can run controlled PPO drift
-experiments without first building a full distributed actor/learner stack.
+Supports two task types:
+  - JSON extraction (easy_json, medium_json, mixed_json)
+  - WikiSQL text-to-SQL with execution reward (wikisql)
 
 Supported conditions:
   - sync: actor and learner use the same fp32 policy snapshot.
@@ -14,15 +15,22 @@ Supported conditions:
 Outputs:
   - outputs/live_ppo/<run_name>/logs.json
   - outputs/live_ppo/<run_name>/metrics.png
+
+WikiSQL usage:
+  python scripts/live_ppo_rlvr.py --task wikisql --checkpoint outputs/checkpoints/wikisql_sft/checkpoint.pt
 """
 
 import argparse
 import copy
 import json
 import os
+import sys
 import random
 from collections import deque
 from dataclasses import dataclass
+
+# Add scripts directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import matplotlib
 
@@ -34,6 +42,9 @@ import torch.nn.functional as F
 from torch.optim import AdamW
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
+# WikiSQL utilities (lazy import to avoid dependency when using JSON tasks)
+wikisql_utils = None
+
 
 OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "../outputs")
 DEFAULT_OUTPUT_DIR = os.path.join(OUTPUT_DIR, "live_ppo")
@@ -41,6 +52,21 @@ DEFAULT_OUTPUT_DIR = os.path.join(OUTPUT_DIR, "live_ppo")
 MODEL_ID = "gpt2"
 CLIP_EPS = 0.2
 DEFAULT_MAX_NEW_TOKENS = 48
+DEFAULT_MAX_NEW_TOKENS_SQL = 64
+
+
+def is_wikisql_task(task):
+    """Check if task is WikiSQL."""
+    return task == "wikisql"
+
+
+def get_wikisql_utils():
+    """Lazy import of WikiSQL utilities."""
+    global wikisql_utils
+    if wikisql_utils is None:
+        import wikisql_utils as wu
+        wikisql_utils = wu
+    return wikisql_utils
 
 
 @dataclass
@@ -180,8 +206,61 @@ def sample_json_example(task, few_shot=True):
     raise ValueError(f"Unknown task: {task}")
 
 
+# WikiSQL dataset holder (initialized in main if needed)
+_wikisql_train_dataset = None
+_wikisql_eval_dataset = None
+
+
+def init_wikisql_datasets(args):
+    """Initialize WikiSQL datasets for training and eval."""
+    global _wikisql_train_dataset, _wikisql_eval_dataset
+    wu = get_wikisql_utils()
+
+    print(f"Loading WikiSQL train dataset ({args.wikisql_train_examples} examples)...")
+    _wikisql_train_dataset = wu.WikiSQLDataset(
+        split="train",
+        max_examples=args.wikisql_train_examples,
+        seed=args.seed,
+        few_shot=not args.no_few_shot,
+        show_col_mapping=True,
+    )
+
+    print(f"Loading WikiSQL eval dataset ({args.wikisql_eval_examples} examples)...")
+    _wikisql_eval_dataset = wu.WikiSQLDataset(
+        split="dev",
+        max_examples=args.wikisql_eval_examples,
+        seed=args.seed + 5000,
+        few_shot=not args.no_few_shot,
+        show_col_mapping=True,
+    )
+
+
+def sample_wikisql_example():
+    """Sample a WikiSQL example from the training set."""
+    if _wikisql_train_dataset is None:
+        raise RuntimeError("WikiSQL dataset not initialized. Call init_wikisql_datasets first.")
+    return _wikisql_train_dataset.sample()
+
+
+def score_wikisql_response(response, example):
+    """Score a WikiSQL response using execution reward."""
+    wu = get_wikisql_utils()
+    return wu.score_sql_execution(
+        generated_sql=response,
+        gold_sql=example.gold_sql,
+        header=example.header,
+        rows=example.rows,
+    )
+
+
 def build_eval_examples(task, num_examples, seed, few_shot=True):
     """Create a fixed eval set without disturbing the training RNG stream."""
+    if is_wikisql_task(task):
+        # For WikiSQL, use the pre-loaded eval dataset
+        if _wikisql_eval_dataset is None:
+            raise RuntimeError("WikiSQL eval dataset not initialized.")
+        return _wikisql_eval_dataset.build_eval_set(num_examples, seed)
+
     random_state = random.getstate()
     random.seed(seed)
     examples = [sample_json_example(task, few_shot=few_shot) for _ in range(num_examples)]
@@ -370,8 +449,15 @@ def rollout_batch(learner_policy, actor, actor_fp16, tokenizer, actor_state, dev
     rewards = []
     reward_details = []
 
+    use_wikisql = is_wikisql_task(args.task)
+
     for _ in range(args.batch_size):
-        example = sample_json_example(args.task, few_shot=not args.no_few_shot)
+        # Sample example based on task type
+        if use_wikisql:
+            example = sample_wikisql_example()
+        else:
+            example = sample_json_example(args.task, few_shot=not args.no_few_shot)
+
         generation_source = actor_fp16 if args.condition in {"mismatch", "rescored", "stale_mismatch"} else actor
         full_ids, response_start, response = generate_one(
             generation_source, tokenizer, example.prompt, device, args
@@ -388,15 +474,24 @@ def rollout_batch(learner_policy, actor, actor_fp16, tokenizer, actor_state, dev
         if old_logprobs is None or pre_update_logprobs is None:
             continue
 
-        reward, details = score_json_response(response, example.target, reward_mode=args.reward_mode)
+        # Score based on task type
+        if use_wikisql:
+            reward, details = score_wikisql_response(response, example)
+            target_str = example.gold_sql
+            schema = "wikisql"
+        else:
+            reward, details = score_json_response(response, example.target, reward_mode=args.reward_mode)
+            target_str = example.target_json
+            schema = example.schema
+
         rewards.append(reward)
         reward_details.append(details)
         records.append(
             {
                 "prompt": example.prompt,
-                "target": example.target,
-                "target_json": example.target_json,
-                "schema": example.schema,
+                "target": example.gold_sql if use_wikisql else example.target,
+                "target_json": target_str,
+                "schema": schema,
                 "response": response,
                 "full_ids": full_ids,
                 "response_start": response_start,
@@ -754,26 +849,44 @@ def evaluate_policy(policy, tokenizer, eval_examples, device, args):
     details = []
     samples = []
 
+    use_wikisql = is_wikisql_task(args.task)
+
     for example in eval_examples:
         _, _, response = generate_one(policy, tokenizer, example.prompt, device, args, do_sample=False)
-        reward, reward_detail = score_json_response(response, example.target, reward_mode=args.reward_mode)
+
+        if use_wikisql:
+            reward, reward_detail = score_wikisql_response(response, example)
+            target_str = example.gold_sql
+            schema = "wikisql"
+        else:
+            reward, reward_detail = score_json_response(response, example.target, reward_mode=args.reward_mode)
+            target_str = example.target_json
+            schema = example.schema
+
         rewards.append(reward)
         details.append(reward_detail)
         if len(samples) < args.num_eval_samples_to_log:
             samples.append(
                 {
-                    "schema": example.schema,
-                    "target_json": example.target_json,
+                    "schema": schema,
+                    "target_json": target_str,
                     "response": response,
                     "reward": reward,
                 }
             )
 
     detail_means = summarize_reward_details(details)
+
+    # For WikiSQL, "exact" means correct_result; for JSON it means exact match
+    if use_wikisql:
+        pass_at_1 = float(np.mean([row.get("correct_result", 0.0) for row in details])) if details else 0.0
+    else:
+        pass_at_1 = float(np.mean([row["exact"] for row in details])) if details else 0.0
+
     return {
         "eval_reward_mean": float(np.mean(rewards)) if rewards else 0.0,
         "eval_reward_std": float(np.std(rewards)) if rewards else 0.0,
-        "eval_pass_at_1": float(np.mean([row["exact"] for row in details])) if details else 0.0,
+        "eval_pass_at_1": pass_at_1,
         **{f"eval_{key}": value for key, value in detail_means.items()},
         "eval_samples": samples,
     }
@@ -785,20 +898,42 @@ def main(args):
     print(f"Using device: {device}")
     print(f"Condition: {args.condition}  Task: {args.task}  Seed: {args.seed}")
 
+    # Adjust max_new_tokens for SQL if not explicitly set
+    if is_wikisql_task(args.task) and args.max_new_tokens == DEFAULT_MAX_NEW_TOKENS:
+        args.max_new_tokens = DEFAULT_MAX_NEW_TOKENS_SQL
+        print(f"Using max_new_tokens={args.max_new_tokens} for WikiSQL")
+
+    # Initialize WikiSQL datasets if needed
+    if is_wikisql_task(args.task):
+        init_wikisql_datasets(args)
+
     tokenizer = AutoTokenizer.from_pretrained(args.model_id)
     tokenizer.pad_token = tokenizer.eos_token
 
     print("Loading learner policy...")
     policy = build_model(args.model_id, device, dtype=torch.float32)
     policy.config.use_cache = False
+
+    # Load checkpoint if provided
+    if args.checkpoint:
+        print(f"Loading checkpoint from {args.checkpoint}...")
+        state_dict = torch.load(args.checkpoint, map_location=device)
+        policy.load_state_dict(state_dict)
+        print("Checkpoint loaded successfully")
+
     print("Loading actor policy...")
     actor = build_model(args.model_id, device, dtype=torch.float32)
+    if args.checkpoint:
+        actor.load_state_dict(state_dict)
 
     actor_fp16 = None
     if args.condition in {"mismatch", "rescored", "stale_mismatch"}:
         dtype = torch.float16 if device == "cuda" else torch.float32
         print(f"Loading mismatch actor ({dtype})...")
         actor_fp16 = build_model(args.model_id, device, dtype=dtype)
+        if args.checkpoint:
+            # Load fp32 checkpoint and convert
+            actor_fp16.load_state_dict(state_dict)
 
     optimizer = AdamW(policy.parameters(), lr=args.lr, weight_decay=0.0)
     # For GPT-2-scale controlled experiments only. Larger models should store
@@ -852,7 +987,13 @@ def main(args):
 
         metrics = ppo_update(policy, optimizer, records, rewards, device, args)
         reward_detail_means = summarize_reward_details(details)
-        pass_at_1 = float(np.mean([row["exact"] for row in details])) if details else 0.0
+
+        # For WikiSQL, "pass" means correct_result; for JSON it means exact match
+        if is_wikisql_task(args.task):
+            pass_at_1 = float(np.mean([row.get("correct_result", 0.0) for row in details])) if details else 0.0
+        else:
+            pass_at_1 = float(np.mean([row["exact"] for row in details])) if details else 0.0
+
         reward_mean = float(np.mean(rewards))
 
         row = {
@@ -914,8 +1055,14 @@ if __name__ == "__main__":
         "--task",
         type=str,
         default="easy_json",
-        choices=["easy_json", "medium_json", "mixed_json"],
+        choices=["easy_json", "medium_json", "mixed_json", "wikisql"],
     )
+    parser.add_argument("--checkpoint", type=str, default="",
+                        help="Path to model checkpoint (e.g., SFT warm-start for WikiSQL)")
+    parser.add_argument("--wikisql_train_examples", type=int, default=2000,
+                        help="Number of WikiSQL training examples")
+    parser.add_argument("--wikisql_eval_examples", type=int, default=200,
+                        help="Number of WikiSQL eval examples")
     parser.add_argument("--lag", type=int, default=0)
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--updates", type=int, default=20)

@@ -840,7 +840,14 @@ def summarize_reward_details(details):
     if not details:
         return {}
     keys = details[0].keys()
-    return {key: float(np.mean([row[key] for row in details])) for key in keys}
+    summary = {}
+    for key in keys:
+        values = [row[key] for row in details]
+        # Only average numeric values (int, float, bool)
+        if all(isinstance(v, (int, float, bool)) or v is None for v in values):
+            numeric_values = [float(v) if v is not None else 0.0 for v in values]
+            summary[key] = float(np.mean(numeric_values))
+    return summary
 
 
 def evaluate_policy(policy, tokenizer, eval_examples, device, args):

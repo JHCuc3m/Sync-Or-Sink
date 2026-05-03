@@ -39,8 +39,9 @@ The synthetic JSON task lacks grounding. WikiSQL provides:
 | ✅ | Prompt template | `scripts/wikisql_utils.py` (`build_prompt()`) |
 | ✅ | SQLite execution reward | `scripts/wikisql_utils.py` (`score_sql_execution()`) |
 | ✅ | SFT warm-start script | `scripts/sft_wikisql.py`, `jobs/run_sft_wikisql.sbatch` |
-| ⬜ | Integrate WikiSQL into live PPO | `scripts/live_ppo_rlvr.py` (add `--task wikisql`) |
+| ✅ | Integrate WikiSQL into live PPO | `scripts/live_ppo_rlvr.py` (`--task wikisql --checkpoint`) |
 | ⬜ | Run SFT warm-start | `sbatch jobs/run_sft_wikisql.sbatch` |
+| ⬜ | Run PPO with WikiSQL | `sbatch jobs/run_ppo_wikisql.sbatch` |
 
 **Reward structure:**
 - 1.0 = generated SQL executes to same answer as gold
@@ -131,9 +132,9 @@ Goal: statistical credibility over breadth.
 
 1. ~~WikiSQL data + utilities~~ ✅ `scripts/wikisql_utils.py`, `scripts/download_wikisql.sh`
 2. ~~SFT warm-start script~~ ✅ `scripts/sft_wikisql.py`, `jobs/run_sft_wikisql.sbatch`
-3. Run SFT warm-start: `sbatch jobs/run_sft_wikisql.sbatch` (next)
-4. Integrate WikiSQL into live PPO harness
-5. Sync PPO baseline (validates harness works)
+3. ~~Integrate WikiSQL into live PPO~~ ✅ `scripts/live_ppo_rlvr.py`, `jobs/run_ppo_wikisql.sbatch`
+4. Run SFT warm-start: `sbatch jobs/run_sft_wikisql.sbatch` (in progress)
+5. Run sync PPO baseline: `sbatch jobs/run_ppo_wikisql.sbatch`
 6. Staleness sweep L ∈ {0, 1, 2, 4} (H2, core contribution)
 7. Mismatch and rescoring (H1, core contribution)
 8. Replication over seeds

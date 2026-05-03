@@ -34,13 +34,13 @@ source .venv/bin/activate
 
 ## Getting a GPU on PACE (COC-ICE Cluster)
 
+**Important:** A100 GPUs are required for compatibility with PyTorch 2.5.1+cu121. Newer GPUs (e.g., RTX 6000 Blackwell) require CUDA 13+ which is not yet supported.
+
 **Option A — Interactive session** (for debugging):
 
 ```bash
-salloc -A cse -q coc-ice -N 1 --gpus=1 -t 1:00:00
-# Requests 1 GPU for 1 hour on coc-ice partition and billed to the cse account
-salloc -A coc -q coc-ice -N 1 --gpus=1 --constraint=gpu-l40s -t 1:00:00
-# Requests 1 L40S GPU for 1 hour on coc-ice partition and billed to the coc account
+salloc -A cse -q coc-ice -N 1 --gpus=1 --constraint=gpu-a100 -t 1:00:00
+# Requests 1 A100 GPU for 1 hour on coc-ice partition
 ```
 
 Once allocated, activate the environment and run scripts directly:
@@ -153,18 +153,27 @@ Sync-Or-Sink/
 │   ├── dpo_baseline.py        # DPO training baseline
 │   ├── logprob_parity.py      # fp32 vs fp16 logprob comparison
 │   ├── staleness_test.py      # Simulated staleness experiment
-│   └── plot_pipeline.py       # Pipeline diagram figure
+│   ├── plot_pipeline.py       # Pipeline diagram figure
+│   ├── live_ppo_rlvr.py       # Live PPO harness with staleness/mismatch
+│   ├── sft_wikisql.py         # SFT warm-start on WikiSQL
+│   ├── wikisql_utils.py       # WikiSQL data loading + SQLite reward
+│   └── download_wikisql.sh    # Download WikiSQL dataset
 ├── jobs/
 │   ├── run_dpo_baseline.sbatch
 │   ├── run_logprob_parity.sbatch
-│   └── run_staleness_test.sbatch
+│   ├── run_staleness_test.sbatch
+│   ├── run_live_ppo_rlvr.sbatch
+│   └── run_sft_wikisql.sbatch
+├── data/
+│   └── data/                  # WikiSQL dataset (downloaded)
 ├── outputs/
 │   ├── figures/               # Generated plots
 │   ├── logs/                  # JSON metric logs + SLURM output
-│   └── checkpoints/           # SFT model checkpoints (staleness test)
+│   ├── checkpoints/           # Model checkpoints
+│   └── live_ppo/              # Live PPO experiment outputs
 └── docs/
     ├── proposal.md
-    ├── todos.md
+    └── todos_next.md          # Current TODO list
 ```
 
 ---

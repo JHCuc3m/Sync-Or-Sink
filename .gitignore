@@ -5,3 +5,4 @@ extra_information/
 scripts/__pycache__/
 data/
 outputs/milestones
+outputs/logs

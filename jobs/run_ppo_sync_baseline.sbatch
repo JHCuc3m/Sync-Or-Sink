@@ -4,12 +4,11 @@
 #SBATCH -q coc-ice
 #SBATCH -N 1
 #SBATCH --gpus=1
-#SBATCH --constraint=gpu-a100
 #SBATCH --mem=16G
 #SBATCH -t 1:00:00
-#SBATCH -J dpo_baseline
-#SBATCH -o outputs/logs/dpo_baseline_%j.out
-#SBATCH -e outputs/logs/dpo_baseline_%j.err
+#SBATCH -J ppo_sync
+#SBATCH -o outputs/logs/ppo_sync_%j.out
+#SBATCH -e outputs/logs/ppo_sync_%j.err
 
 set -euo pipefail
 
@@ -32,6 +31,27 @@ echo "==> Job started: $(date)"
 echo "==> Node: $(hostname)"
 echo "==> GPU: $(nvidia-smi --query-gpu=name --format=csv,noheader 2>/dev/null || echo 'N/A')"
 
-"$PYTHON_BIN" scripts/dpo_baseline.py --num_samples 2000 --max_steps 200
+EXPERIMENT_NAME="${EXPERIMENT_NAME:-ppo_formal_sync}"
+TASK_NAME="${TASK_NAME:-simple_arithmetic}"
+STEPS="${STEPS:-80}"
+TRAIN_SAMPLES="${TRAIN_SAMPLES:-128}"
+EVAL_SAMPLES="${EVAL_SAMPLES:-64}"
+EVAL_EVERY="${EVAL_EVERY:-10}"
+LEARNING_RATE="${LEARNING_RATE:-1e-4}"
+BATCH_SIZE="${BATCH_SIZE:-8}"
+PPO_EPOCHS="${PPO_EPOCHS:-3}"
+MAX_NEW_TOKENS="${MAX_NEW_TOKENS:-8}"
+
+"$PYTHON_BIN" scripts/ppo_sync_baseline.py \
+  --experiment_name "$EXPERIMENT_NAME" \
+  --task_name "$TASK_NAME" \
+  --steps "$STEPS" \
+  --batch_size "$BATCH_SIZE" \
+  --ppo_epochs "$PPO_EPOCHS" \
+  --learning_rate "$LEARNING_RATE" \
+  --train_samples "$TRAIN_SAMPLES" \
+  --eval_samples "$EVAL_SAMPLES" \
+  --eval_every "$EVAL_EVERY" \
+  --max_new_tokens "$MAX_NEW_TOKENS"
 
 echo "==> Job finished: $(date)"

@@ -15,8 +15,8 @@ Outputs:
 """
 
 import os
-import json
 import copy
+import argparse
 import torch
 import numpy as np
 import matplotlib
@@ -28,17 +28,10 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, get_linear_schedul
 from torch.optim import AdamW
 from torch.utils.data import DataLoader
 
-OUTPUT_DIR  = os.path.join(os.path.dirname(__file__), "../outputs")
-LOG_DIR     = os.path.join(OUTPUT_DIR, "logs")
-FIG_DIR     = os.path.join(OUTPUT_DIR, "figures")
-CKPT_DIR    = os.path.join(OUTPUT_DIR, "checkpoints")
-os.makedirs(LOG_DIR,  exist_ok=True)
-os.makedirs(FIG_DIR,  exist_ok=True)
-os.makedirs(CKPT_DIR, exist_ok=True)
+from common import CKPT_DIR, FIG_DIR, LOG_DIR, ensure_output_dirs, get_device, save_json, set_seed, write_config
 
 MODEL_ID     = "gpt2"
 TOTAL_STEPS  = 100          # total SFT steps
-LAG_STEPS    = [0, 25, 50, 75, 100]   # L values to evaluate (0 = base model)
 SAVE_STEPS   = {0, 25, 50, 75, 100}   # checkpoints saved during training
 CLIP_EPS     = 0.2          # PPO clip threshold
 MAX_LEN      = 128
@@ -157,29 +150,36 @@ def plot_kl_clip(lag_values, kls, clips, out_path):
 
 # ── Main ───────────────────────────────────────────────────────────────────────
 
-def main():
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+def main(args):
+    ensure_output_dirs()
+    set_seed(args.seed)
+    device = get_device()
     print(f"Using device: {device}")
 
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
+    tokenizer = AutoTokenizer.from_pretrained(args.model_id)
     tokenizer.pad_token = tokenizer.eos_token
 
     def ckpt_path(step):
-        return os.path.join(CKPT_DIR, f"step_{step:04d}.pt")
+        return os.path.join(str(CKPT_DIR), f"step_{step:04d}.pt")
 
-    all_saved = all(os.path.exists(ckpt_path(s)) for s in SAVE_STEPS)
+    save_steps = {0, *args.save_steps}
+    all_saved = all(os.path.exists(ckpt_path(s)) for s in save_steps)
 
     print("Loading base model...")
-    model = AutoModelForCausalLM.from_pretrained(MODEL_ID, torch_dtype=torch.float32).to(device)
+    model = AutoModelForCausalLM.from_pretrained(args.model_id, torch_dtype=torch.float32).to(device)
+
+    config_payload = vars(args).copy()
+    config_payload["device"] = device
+    write_config("staleness_test", config_payload)
 
     if all_saved:
         # ── Fast path: load from disk, skip SFT ───────────────────────────────
         print("All checkpoints found on disk — skipping SFT training.")
         checkpoints = {}
-        for step in SAVE_STEPS:
+        for step in save_steps:
             checkpoints[step] = torch.load(ckpt_path(step), map_location=device)
             print(f"  Loaded checkpoint step {step} from {ckpt_path(step)}")
-        final_state = checkpoints[TOTAL_STEPS]
+        final_state = checkpoints[args.total_steps]
     else:
         # ── SFT training ──────────────────────────────────────────────────────
         checkpoints = {}
@@ -190,8 +190,8 @@ def main():
         print(f"Checkpoint saved: step 0 → {ckpt_path(0)}")
 
         print("Loading SFT data...")
-        texts = load_sft_data(num_samples=1000)
-        enc   = tokenize_texts(texts, tokenizer)
+        texts = load_sft_data(num_samples=args.num_train_samples)
+        enc   = tokenize_texts(texts, tokenizer, max_len=args.max_len)
 
         dataset = torch.utils.data.TensorDataset(
             enc["input_ids"], enc["attention_mask"]
@@ -201,12 +201,12 @@ def main():
 
         optimizer = AdamW(model.parameters(), lr=LR)
         scheduler = get_linear_schedule_with_warmup(
-            optimizer, num_warmup_steps=10, num_training_steps=TOTAL_STEPS
+            optimizer, num_warmup_steps=10, num_training_steps=args.total_steps
         )
 
-        print(f"Starting SFT training for {TOTAL_STEPS} steps...")
+        print(f"Starting SFT training for {args.total_steps} steps...")
         model.train()
-        for step in range(1, TOTAL_STEPS + 1):
+        for step in range(1, args.total_steps + 1):
             try:
                 batch_ids, batch_mask = next(loader_iter)
             except StopIteration:
@@ -222,51 +222,45 @@ def main():
             optimizer.step()
             scheduler.step()
 
-            if step in SAVE_STEPS and step > 0:
+            if step in save_steps and step > 0:
                 checkpoints[step] = copy.deepcopy(model.state_dict())
                 torch.save(checkpoints[step], ckpt_path(step))
                 print(f"  Checkpoint saved: step {step} → {ckpt_path(step)}  "
                       f"(loss={loss.item():.4f})")
 
             if step % 25 == 0:
-                print(f"  Step {step}/{TOTAL_STEPS}  loss={loss.item():.4f}")
+                print(f"  Step {step}/{args.total_steps}  loss={loss.item():.4f}")
 
-        # Final model = "current policy" (step TOTAL_STEPS)
+        # Final model = "current policy" (step total_steps)
         final_state = copy.deepcopy(model.state_dict())
+        checkpoints[args.total_steps] = final_state
 
     # ── Evaluation texts ──────────────────────────────────────────────────────
     print("\nLoading evaluation texts...")
     eval_texts = load_dataset("Anthropic/hh-rlhf", split="test")
-    eval_texts = [ex["chosen"] for ex in eval_texts.select(range(NUM_EVAL))]
+    eval_texts = [ex["chosen"] for ex in eval_texts.select(range(args.num_eval_samples))]
 
     # ── Compute logprobs for final policy ─────────────────────────────────────
     model.load_state_dict(final_state)
     model.eval()
-    print("Computing logprobs for final policy (step 100)...")
-    lp_final = get_token_logprobs(model, tokenizer, eval_texts, device)
+    print(f"Computing logprobs for final policy (step {args.total_steps})...")
+    lp_final = get_token_logprobs(model, tokenizer, eval_texts, device, max_len=args.max_len)
 
     # ── Compute stats per lag ─────────────────────────────────────────────────
-    # Lag L means actor used checkpoint at step (TOTAL_STEPS - L).
-    # Final policy is step 100; actor used step (100 - L).
-    # Saved checkpoints: 0, 25, 50, 75, 100 → exact mapping for all lags.
-    ckpt_for_lag = {
-        0:   100,   # actor at step 100 = no lag (sanity check)
-        25:  75,    # actor 25 steps behind
-        50:  50,    # actor 50 steps behind
-        75:  25,    # actor 75 steps behind
-        100: 0,     # actor 100 steps behind (base model)
-    }
+    ckpt_for_lag = {lag: args.total_steps - lag for lag in sorted(args.lags)}
 
     all_stats = []
     lag_plot, var_plot, kl_plot, clip_plot = [], [], [], []
 
     for lag, ckpt_step in sorted(ckpt_for_lag.items()):
+        if ckpt_step not in checkpoints:
+            raise ValueError(f"Missing checkpoint for lag {lag}: expected step {ckpt_step}.")
         model.load_state_dict(checkpoints[ckpt_step])
         print(f"Computing logprobs for lag L={lag} (checkpoint step {ckpt_step})...")
-        lp_old = get_token_logprobs(model, tokenizer, eval_texts, device)
+        lp_old = get_token_logprobs(model, tokenizer, eval_texts, device, max_len=args.max_len)
 
         n = min(len(lp_final), len(lp_old))
-        stats = compute_ratio_stats(lp_final[:n], lp_old[:n])
+        stats = compute_ratio_stats(lp_final[:n], lp_old[:n], eps=args.clip_eps)
         stats["lag"]        = lag
         stats["ckpt_step"]  = ckpt_step
         stats["num_tokens"] = n
@@ -281,15 +275,14 @@ def main():
         clip_plot.append(stats["clip_fraction"])
 
     # ── Save & plot ───────────────────────────────────────────────────────────
-    log_path = os.path.join(LOG_DIR, "staleness_stats.json")
-    with open(log_path, "w") as f:
-        json.dump(all_stats, f, indent=2)
+    log_path = os.path.join(str(LOG_DIR), "staleness_stats.json")
+    save_json(LOG_DIR / "staleness_stats.json", all_stats)
     print(f"\nStats saved to {log_path}")
 
     plot_ratio_variance(lag_plot, var_plot,
-                        os.path.join(FIG_DIR, "staleness_ratio_variance.png"))
+                        os.path.join(str(FIG_DIR), "staleness_ratio_variance.png"))
     plot_kl_clip(lag_plot, kl_plot, clip_plot,
-                 os.path.join(FIG_DIR, "staleness_kl_clip.png"))
+                 os.path.join(str(FIG_DIR), "staleness_kl_clip.png"))
 
     print("\n=== Staleness Test Complete ===")
     for s in all_stats:
@@ -298,4 +291,23 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model_id", type=str, default=MODEL_ID,
+                        help="HF model id")
+    parser.add_argument("--total_steps", type=int, default=TOTAL_STEPS,
+                        help="Total SFT steps")
+    parser.add_argument("--save_steps", type=int, nargs="+", default=[25, 50, 75, 100],
+                        help="Checkpoint steps to save; step 0 is always included")
+    parser.add_argument("--lags", type=int, nargs="+", default=[0, 25, 50, 75, 100],
+                        help="Lag values to evaluate; each lag must map to a saved checkpoint")
+    parser.add_argument("--clip_eps", type=float, default=CLIP_EPS,
+                        help="PPO clipping threshold used for the report metric")
+    parser.add_argument("--max_len", type=int, default=MAX_LEN,
+                        help="Maximum tokens per sample")
+    parser.add_argument("--num_train_samples", type=int, default=1000,
+                        help="Training samples for the SFT proxy run")
+    parser.add_argument("--num_eval_samples", type=int, default=NUM_EVAL,
+                        help="Evaluation samples for ratio computation")
+    parser.add_argument("--seed", type=int, default=42,
+                        help="Random seed")
+    main(parser.parse_args())

@@ -1,6 +1,12 @@
 .venv/
+.conda-env/
+.conda-run/
+outputs/
 latex/
 tmp/
+__pycache__/
+.cache/
+slurm-*.out
 extra_information/
 scripts/__pycache__/
 data/

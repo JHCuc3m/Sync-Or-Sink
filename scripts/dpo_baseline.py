@@ -14,20 +14,14 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-from datasets import load_dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from trl import DPOTrainer, DPOConfig
 from peft import LoraConfig, TaskType
 
-# ── Config ─────────────────────────────────────────────────────────────────────
-OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "../outputs")
-LOG_DIR    = os.path.join(OUTPUT_DIR, "logs")
-FIG_DIR    = os.path.join(OUTPUT_DIR, "figures")
-os.makedirs(LOG_DIR, exist_ok=True)
-os.makedirs(FIG_DIR, exist_ok=True)
+from common import FIG_DIR, LOG_DIR, ensure_output_dirs, get_device, load_hh_preferences, set_seed, write_config
 
+# ── Config ─────────────────────────────────────────────────────────────────────
 MODEL_ID  = "gpt2"
-DATASET   = "Anthropic/hh-rlhf"
 MAX_LEN   = 512
 BETA      = 0.1     # DPO temperature
 EPOCHS    = 1
@@ -35,39 +29,6 @@ LR        = 1e-4
 BATCH     = 4
 GRAD_ACC  = 4
 MAX_STEPS = 200     # cap for milestone speed
-
-
-def load_hh_rlhf(split="train", num_samples=2000):
-    """Load HH-RLHF and reformat to DPO format: prompt / chosen / rejected."""
-    ds = load_dataset(DATASET, split=split)
-    ds = ds.select(range(min(num_samples, len(ds))))
-
-    def reformat(example):
-        # HH-RLHF has 'chosen' and 'rejected' as full conversation strings.
-        # DPO trainer expects: prompt, chosen, rejected.
-        # We split on the last '\n\nAssistant:' to get prompt vs response.
-        chosen   = example["chosen"]
-        rejected = example["rejected"]
-
-        # Find the split point (last assistant turn marker)
-        marker = "\n\nAssistant:"
-        split_idx = chosen.rfind(marker)
-        if split_idx == -1:
-            prompt   = ""
-            chosen_r = chosen
-        else:
-            prompt   = chosen[:split_idx + len(marker)]
-            chosen_r = chosen[split_idx + len(marker):]
-
-        split_idx2 = rejected.rfind(marker)
-        rejected_r = rejected[split_idx2 + len(marker):] if split_idx2 != -1 else rejected
-
-        return {"prompt": prompt, "chosen": chosen_r, "rejected": rejected_r}
-
-    ds = ds.map(reformat, remove_columns=ds.column_names)
-    # Drop rows where any field is empty
-    ds = ds.filter(lambda x: len(x["prompt"]) > 0 and len(x["chosen"]) > 0 and len(x["rejected"]) > 0)
-    return ds
 
 
 def build_model_and_tokenizer(model_id):
@@ -88,6 +49,7 @@ def get_lora_config():
         lora_alpha=16,
         lora_dropout=0.05,
         target_modules=["c_attn"],   # GPT-2 attention projection
+        fan_in_fan_out=True,
     )
 
 
@@ -114,19 +76,25 @@ def plot_loss(log_history, out_path):
 
 
 def main(args):
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    ensure_output_dirs()
+    set_seed(args.seed)
+    device = get_device()
     print(f"Using device: {device}")
 
     print("Loading dataset...")
-    train_ds = load_hh_rlhf("train", num_samples=args.num_samples)
-    eval_ds  = load_hh_rlhf("test",  num_samples=200)
+    train_ds = load_hh_preferences("train", num_samples=args.num_samples)
+    eval_ds  = load_hh_preferences("test", num_samples=args.eval_samples)
     print(f"Train: {len(train_ds)}  Eval: {len(eval_ds)}")
 
     print("Building model...")
-    model, tokenizer = build_model_and_tokenizer(MODEL_ID)
+    model, tokenizer = build_model_and_tokenizer(args.model_id)
+
+    config_payload = vars(args).copy()
+    config_payload["device"] = device
+    write_config("dpo_baseline", config_payload)
 
     training_args = DPOConfig(
-        output_dir=os.path.join(LOG_DIR, "dpo_baseline"),
+        output_dir=os.path.join(str(LOG_DIR), "dpo_baseline"),
         num_train_epochs=EPOCHS,
         max_steps=args.max_steps,
         per_device_train_batch_size=BATCH,
@@ -158,13 +126,13 @@ def main(args):
     train_result = trainer.train()
 
     # Save logs
-    log_path = os.path.join(LOG_DIR, "dpo_baseline_logs.json")
+    log_path = os.path.join(str(LOG_DIR), "dpo_baseline_logs.json")
     with open(log_path, "w") as f:
         json.dump(trainer.state.log_history, f, indent=2)
     print(f"Logs saved to {log_path}")
 
     # Plot
-    fig_path = os.path.join(FIG_DIR, "dpo_loss_curve.png")
+    fig_path = os.path.join(str(FIG_DIR), "dpo_loss_curve.png")
     plot_loss(trainer.state.log_history, fig_path)
 
     # Summary
@@ -177,10 +145,16 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument("--model_id", type=str, default=MODEL_ID,
+                        help="HF model id")
     parser.add_argument("--num_samples", type=int, default=2000,
                         help="Number of training samples to use")
+    parser.add_argument("--eval_samples", type=int, default=200,
+                        help="Number of evaluation samples to use")
     parser.add_argument("--max_steps", type=int, default=MAX_STEPS,
                         help="Max training steps (set 0 to use full epochs)")
+    parser.add_argument("--seed", type=int, default=42,
+                        help="Random seed")
     args = parser.parse_args()
     if args.max_steps == 0:
         args.max_steps = -1

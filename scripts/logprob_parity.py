@@ -15,6 +15,7 @@ Outputs:
 
 import os
 import json
+import argparse
 import torch
 import numpy as np
 import matplotlib
@@ -24,11 +25,7 @@ import matplotlib.pyplot as plt
 from datasets import load_dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-OUTPUT_DIR = os.path.join(os.path.dirname(__file__), "../outputs")
-LOG_DIR    = os.path.join(OUTPUT_DIR, "logs")
-FIG_DIR    = os.path.join(OUTPUT_DIR, "figures")
-os.makedirs(LOG_DIR, exist_ok=True)
-os.makedirs(FIG_DIR, exist_ok=True)
+from common import FIG_DIR, LOG_DIR, ensure_output_dirs, get_device, set_seed, write_config
 
 MODEL_ID    = "gpt2"
 NUM_SAMPLES = 200
@@ -91,35 +88,41 @@ def plot_histogram(deltas, out_path, mean, std):
     print(f"Histogram saved to {out_path}")
 
 
-def main():
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+def main(args):
+    ensure_output_dirs()
+    set_seed(args.seed)
+    device = get_device()
     print(f"Using device: {device}")
 
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
+    tokenizer = AutoTokenizer.from_pretrained(args.model_id)
     tokenizer.pad_token = tokenizer.eos_token
 
     # Model A: fp32 (simulates HuggingFace training backend)
     print("Loading Model A (fp32)...")
-    model_a = AutoModelForCausalLM.from_pretrained(MODEL_ID, torch_dtype=torch.float32).to(device)
+    model_a = AutoModelForCausalLM.from_pretrained(args.model_id, torch_dtype=torch.float32).to(device)
 
     # Model B: fp16 (simulates vLLM / quantized inference backend)
     # This is the primary source of logprob mismatch in real pipelines.
     if device == "cuda":
         print("Loading Model B (fp16)...")
-        model_b = AutoModelForCausalLM.from_pretrained(MODEL_ID, torch_dtype=torch.float16).to(device)
+        model_b = AutoModelForCausalLM.from_pretrained(args.model_id, torch_dtype=torch.float16).to(device)
     else:
         # On CPU float16 is not supported; use a second fp32 load to show zero drift
         print("Loading Model B (fp32, CPU fallback)...")
-        model_b = AutoModelForCausalLM.from_pretrained(MODEL_ID, torch_dtype=torch.float32).to(device)
+        model_b = AutoModelForCausalLM.from_pretrained(args.model_id, torch_dtype=torch.float32).to(device)
 
-    print(f"Loading {NUM_SAMPLES} text samples...")
-    texts = load_texts(NUM_SAMPLES)
+    config_payload = vars(args).copy()
+    config_payload["device"] = device
+    write_config("logprob_parity", config_payload)
+
+    print(f"Loading {args.num_samples} text samples...")
+    texts = load_texts(args.num_samples)
 
     print("Computing logprobs for Model A...")
-    lp_a = get_token_logprobs(model_a, tokenizer, texts, device)
+    lp_a = get_token_logprobs(model_a, tokenizer, texts, device, max_len=args.max_len)
 
     print("Computing logprobs for Model B...")
-    lp_b = get_token_logprobs(model_b, tokenizer, texts, device)
+    lp_b = get_token_logprobs(model_b, tokenizer, texts, device, max_len=args.max_len)
 
     # Align lengths (they should match but guard against truncation edge cases)
     n     = min(len(lp_a), len(lp_b))
@@ -131,30 +134,55 @@ def main():
     std   = float(np.std(delta))
     abs_mean = float(np.mean(np.abs(delta)))
     max_abs  = float(np.max(np.abs(delta)))
+    p95_abs = float(np.percentile(np.abs(delta), 95))
+    p99_abs = float(np.percentile(np.abs(delta), 99))
+    clip_eps = args.clip_eps
+    ratio_error = np.exp(delta)
+    clip_crossing_fraction = float(
+        np.mean((ratio_error < 1.0 - clip_eps) | (ratio_error > 1.0 + clip_eps))
+    )
 
     print(f"\n=== Logprob Parity Stats ({n} tokens) ===")
     print(f"  Mean Δ:       {mean:.6f}")
     print(f"  Std  Δ:       {std:.6f}")
     print(f"  Mean |Δ|:     {abs_mean:.6f}")
+    print(f"  P95  |Δ|:     {p95_abs:.6f}")
+    print(f"  P99  |Δ|:     {p99_abs:.6f}")
     print(f"  Max  |Δ|:     {max_abs:.6f}")
+    print(f"  Clip crossing fraction @ eps={clip_eps}: {clip_crossing_fraction:.6f}")
 
     stats = {
-        "model_a": f"{MODEL_ID} fp32",
-        "model_b": f"{MODEL_ID} {'fp16' if device == 'cuda' else 'fp32'}",
+        "model_a": f"{args.model_id} fp32",
+        "model_b": f"{args.model_id} {'fp16' if device == 'cuda' else 'fp32'}",
         "num_tokens": n,
         "mean_delta": mean,
         "std_delta": std,
         "mean_abs_delta": abs_mean,
+        "p95_abs_delta": p95_abs,
+        "p99_abs_delta": p99_abs,
         "max_abs_delta": max_abs,
+        "clip_eps": clip_eps,
+        "clip_crossing_fraction": clip_crossing_fraction,
     }
-    log_path = os.path.join(LOG_DIR, "logprob_parity_stats.json")
+    log_path = os.path.join(str(LOG_DIR), "logprob_parity_stats.json")
     with open(log_path, "w") as f:
         json.dump(stats, f, indent=2)
     print(f"Stats saved to {log_path}")
 
-    fig_path = os.path.join(FIG_DIR, "logprob_drift_histogram.png")
+    fig_path = os.path.join(str(FIG_DIR), "logprob_drift_histogram.png")
     plot_histogram(delta, fig_path, mean, std)
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model_id", type=str, default=MODEL_ID,
+                        help="HF model id")
+    parser.add_argument("--num_samples", type=int, default=NUM_SAMPLES,
+                        help="Number of text samples")
+    parser.add_argument("--max_len", type=int, default=MAX_LEN,
+                        help="Maximum tokens per sample")
+    parser.add_argument("--clip_eps", type=float, default=0.2,
+                        help="PPO clip epsilon for induced ratio-error crossing rate")
+    parser.add_argument("--seed", type=int, default=42,
+                        help="Random seed")
+    main(parser.parse_args())

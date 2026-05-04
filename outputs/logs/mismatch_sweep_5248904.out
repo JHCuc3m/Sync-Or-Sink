@@ -1,0 +1,751 @@
+---------------------------------------
+Begin Slurm Prolog: May-04-2026 01:53:06
+Job ID:    5248904
+User ID:   jchen3392
+Account:   cse
+Job name:  mismatch_sweep
+Partition: coc-gpu
+QOS:       coc-ice
+---------------------------------------
+==> Mismatch Sweep started: Mon May  4 01:53:06 AM EDT 2026
+==> Node: atl1-1-03-007-33-0.pace.gatech.edu
+==> GPU: NVIDIA A100-PCIE-40GB
+==> Running: mismatch, seed=0 (Mon May  4 01:53:06 AM EDT 2026)
+Using device: cuda
+Condition: mismatch  Task: wikisql  Seed: 0
+Using max_new_tokens=64 for WikiSQL
+Loading WikiSQL train dataset (2000 examples)...
+Loading WikiSQL tables from /home/hice1/jchen3392/Sync-Or-Sink/scripts/../data/data...
+Loaded 18585 tables
+Loading WikiSQL examples...
+Loaded 56355 examples
+Loading WikiSQL eval dataset (200 examples)...
+Loading WikiSQL tables from /home/hice1/jchen3392/Sync-Or-Sink/scripts/../data/data...
+Loaded 2716 tables
+Loading WikiSQL examples...
+Loaded 8421 examples
+Loading learner policy...
+Loading checkpoint from outputs/checkpoints/wikisql_sft/checkpoint.pt...
+Checkpoint loaded successfully
+Loading actor policy...
+Loading mismatch actor (torch.float16)...
+Update 0001/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0082 grad=5.7774 loss=0.0001
+Update 0002/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0026 grad=0.0000 loss=0.0000
+Update 0003/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0033 grad=6.3984 loss=0.0003
+Update 0004/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0042 grad=4.4636 loss=-0.0001
+Update 0005/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0031 grad=0.0000 loss=0.0000
+Update 0006/100 reward=0.400 pass@1=0.000 clip=0.000 |post_move|=0.0041 grad=4.6293 loss=-0.0003
+Update 0007/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0032 grad=6.5728 loss=0.0002
+Update 0008/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0034 grad=6.5944 loss=0.0005
+Update 0009/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0045 grad=5.8821 loss=0.0006
+Update 0010/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0023 grad=6.7031 loss=0.0005
+Update 0011/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0016 grad=6.3565 loss=0.0004
+Update 0012/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0049 grad=8.6420 loss=-0.0009
+Update 0013/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0023 grad=0.0000 loss=0.0000
+Update 0014/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0030 grad=6.5265 loss=-0.0005
+Update 0015/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0039 grad=8.1070 loss=0.0001
+Update 0016/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0013 grad=7.6129 loss=0.0006
+Update 0017/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0030 grad=10.3454 loss=-0.0010
+Update 0018/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0022 grad=4.6887 loss=-0.0004
+Update 0019/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0048 grad=8.9300 loss=-0.0008
+Update 0020/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0020 grad=5.2172 loss=-0.0000
+Update 0021/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0028 grad=7.5133 loss=-0.0005
+Update 0022/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0019 grad=8.0386 loss=0.0000
+Update 0023/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0017 grad=7.3013 loss=0.0002
+Update 0024/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0019 grad=4.7625 loss=-0.0000
+Update 0025/100 reward=0.775 pass@1=0.750 clip=0.000 |post_move|=0.0028 grad=4.3185 loss=0.0007
+Update 0026/100 reward=0.400 pass@1=0.000 clip=0.000 |post_move|=0.0021 grad=7.0638 loss=-0.0002
+Update 0027/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0029 grad=7.5234 loss=-0.0003
+Update 0028/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0022 grad=7.5618 loss=0.0004
+Update 0029/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0015 grad=0.0000 loss=0.0000
+Update 0030/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0019 grad=4.7670 loss=-0.0006
+Update 0031/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0036 grad=6.1651 loss=-0.0004
+Update 0032/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0033 grad=6.7497 loss=-0.0006
+Update 0033/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0013 grad=0.0000 loss=0.0000
+Update 0034/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0031 grad=6.8746 loss=-0.0012
+Update 0035/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0017 grad=4.1200 loss=-0.0002
+Update 0036/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0030 grad=3.6798 loss=0.0003
+Update 0037/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0024 grad=8.5499 loss=-0.0003
+Update 0038/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0020 grad=7.7873 loss=-0.0006
+Update 0039/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0024 grad=0.0000 loss=0.0000
+Update 0040/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0017 grad=6.8654 loss=0.0001
+Update 0041/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0019 grad=6.0466 loss=0.0001
+Update 0042/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0025 grad=6.0105 loss=-0.0006
+Update 0043/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0014 grad=0.0000 loss=0.0000
+Update 0044/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0015 grad=6.3736 loss=0.0001
+Update 0045/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0032 grad=7.4366 loss=-0.0005
+Update 0046/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0035 grad=7.3719 loss=0.0003
+Update 0047/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0042 grad=8.8284 loss=0.0014
+Update 0048/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0016 grad=4.1167 loss=-0.0005
+Update 0049/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0029 grad=7.9764 loss=0.0006
+Update 0050/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0027 grad=0.0000 loss=0.0000
+Update 0051/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0027 grad=4.8928 loss=0.0012
+Update 0052/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0023 grad=4.9997 loss=0.0002
+Update 0053/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0037 grad=4.7480 loss=-0.0000
+Update 0054/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0023 grad=0.0000 loss=0.0000
+Update 0055/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0058 grad=7.6479 loss=-0.0003
+Update 0056/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0022 grad=8.7032 loss=0.0002
+Update 0057/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0013 grad=4.9354 loss=-0.0005
+Update 0058/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0030 grad=8.9929 loss=0.0001
+Update 0059/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0029 grad=8.0486 loss=0.0011
+Update 0060/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0031 grad=6.1500 loss=0.0009
+Update 0061/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0017 grad=0.0000 loss=0.0000
+Update 0062/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0021 grad=7.1875 loss=-0.0001
+Update 0063/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0015 grad=0.0000 loss=0.0000
+Update 0064/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0019 grad=6.8595 loss=0.0006
+Update 0065/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0032 grad=6.9396 loss=0.0000
+Update 0066/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0028 grad=7.1999 loss=0.0005
+Update 0067/100 reward=0.775 pass@1=0.750 clip=0.000 |post_move|=0.0018 grad=6.9341 loss=-0.0001
+Update 0068/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0028 grad=9.1061 loss=-0.0015
+Update 0069/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0017 grad=0.0000 loss=0.0000
+Update 0070/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0019 grad=8.4739 loss=-0.0004
+Update 0071/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0028 grad=7.6128 loss=0.0005
+Update 0072/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0017 grad=6.0473 loss=0.0002
+Update 0073/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0016 grad=11.1262 loss=0.0006
+Update 0074/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0014 grad=7.0228 loss=0.0012
+Update 0075/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0024 grad=3.8215 loss=0.0006
+Update 0076/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0018 grad=4.7602 loss=-0.0000
+Update 0077/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0016 grad=0.0000 loss=0.0000
+Update 0078/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0022 grad=4.3637 loss=0.0006
+Update 0079/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0031 grad=5.8852 loss=0.0002
+Update 0080/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0023 grad=7.3466 loss=0.0011
+Update 0081/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0018 grad=7.6017 loss=-0.0004
+Update 0082/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0019 grad=9.4264 loss=0.0006
+Update 0083/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0020 grad=5.2931 loss=-0.0004
+Update 0084/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0023 grad=4.7728 loss=0.0005
+Update 0085/100 reward=0.425 pass@1=0.250 clip=0.000 |post_move|=0.0023 grad=4.9074 loss=0.0008
+Update 0086/100 reward=0.775 pass@1=0.750 clip=0.000 |post_move|=0.0043 grad=5.9340 loss=0.0007
+Update 0087/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0020 grad=7.4344 loss=-0.0002
+Update 0088/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0025 grad=7.5519 loss=0.0004
+Update 0089/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0020 grad=7.9448 loss=0.0002
+Update 0090/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0012 grad=6.2900 loss=0.0008
+Update 0091/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0022 grad=7.6471 loss=0.0001
+Update 0092/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0035 grad=8.7487 loss=-0.0002
+Update 0093/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0043 grad=6.6899 loss=-0.0003
+Update 0094/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0038 grad=7.6413 loss=0.0008
+Update 0095/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0030 grad=4.9074 loss=-0.0000
+Update 0096/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0025 grad=6.2250 loss=-0.0005
+Update 0097/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0034 grad=7.1146 loss=0.0008
+Update 0098/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0036 grad=5.3432 loss=0.0002
+Update 0099/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0020 grad=9.5447 loss=0.0002
+Update 0100/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0024 grad=7.1997 loss=0.0008
+Logs saved to outputs/live_ppo/live_ppo_mismatch_wikisql_seed0/logs.json
+Figure saved to outputs/live_ppo/live_ppo_mismatch_wikisql_seed0/metrics.png
+==> Running: mismatch, seed=1 (Mon May  4 01:56:25 AM EDT 2026)
+Using device: cuda
+Condition: mismatch  Task: wikisql  Seed: 1
+Using max_new_tokens=64 for WikiSQL
+Loading WikiSQL train dataset (2000 examples)...
+Loading WikiSQL tables from /home/hice1/jchen3392/Sync-Or-Sink/scripts/../data/data...
+Loaded 18585 tables
+Loading WikiSQL examples...
+Loaded 56355 examples
+Loading WikiSQL eval dataset (200 examples)...
+Loading WikiSQL tables from /home/hice1/jchen3392/Sync-Or-Sink/scripts/../data/data...
+Loaded 2716 tables
+Loading WikiSQL examples...
+Loaded 8421 examples
+Loading learner policy...
+Loading checkpoint from outputs/checkpoints/wikisql_sft/checkpoint.pt...
+Checkpoint loaded successfully
+Loading actor policy...
+Loading mismatch actor (torch.float16)...
+Update 0001/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0095 grad=6.8519 loss=-0.0001
+Update 0002/100 reward=0.625 pass@1=0.250 clip=0.015 |post_move|=0.0110 grad=11.8274 loss=-0.0008
+Update 0003/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0065 grad=6.2611 loss=0.0004
+Update 0004/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0016 grad=5.8945 loss=0.0002
+Update 0005/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0036 grad=5.7914 loss=0.0004
+Update 0006/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0070 grad=10.3993 loss=0.0000
+Update 0007/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0036 grad=10.6380 loss=-0.0010
+Update 0008/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0046 grad=8.3701 loss=-0.0001
+Update 0009/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0021 grad=5.3516 loss=-0.0002
+Update 0010/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0017 grad=0.0000 loss=0.0000
+Update 0011/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0022 grad=4.3890 loss=0.0001
+Update 0012/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0036 grad=6.3021 loss=-0.0008
+Update 0013/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0016 grad=0.0000 loss=0.0000
+Update 0014/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0037 grad=5.0169 loss=-0.0001
+Update 0015/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0024 grad=5.3231 loss=0.0005
+Update 0016/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0032 grad=6.3670 loss=-0.0006
+Update 0017/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0041 grad=6.8260 loss=-0.0005
+Update 0018/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0030 grad=4.0809 loss=0.0001
+Update 0019/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0022 grad=7.4686 loss=0.0011
+Update 0020/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0023 grad=7.7973 loss=0.0003
+Update 0021/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0020 grad=0.0000 loss=0.0000
+Update 0022/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0035 grad=7.2084 loss=-0.0005
+Update 0023/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0024 grad=6.0096 loss=0.0008
+Update 0024/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0032 grad=5.8258 loss=0.0002
+Update 0025/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0030 grad=6.9296 loss=0.0001
+Update 0026/100 reward=0.425 pass@1=0.250 clip=0.000 |post_move|=0.0030 grad=7.4960 loss=0.0003
+Update 0027/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0014 grad=5.7231 loss=-0.0002
+Update 0028/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0015 grad=3.6512 loss=0.0000
+Update 0029/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0027 grad=0.0000 loss=0.0000
+Update 0030/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0021 grad=0.0000 loss=0.0000
+Update 0031/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0015 grad=5.8600 loss=0.0003
+Update 0032/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0023 grad=7.4730 loss=-0.0006
+Update 0033/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0021 grad=5.1659 loss=-0.0003
+Update 0034/100 reward=0.400 pass@1=0.000 clip=0.000 |post_move|=0.0013 grad=5.4539 loss=-0.0001
+Update 0035/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0017 grad=7.1008 loss=0.0008
+Update 0036/100 reward=0.400 pass@1=0.000 clip=0.000 |post_move|=0.0019 grad=6.0651 loss=0.0009
+Update 0037/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0037 grad=6.0703 loss=0.0003
+Update 0038/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0026 grad=3.7842 loss=-0.0003
+Update 0039/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0011 grad=6.7834 loss=0.0009
+Update 0040/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0029 grad=7.7341 loss=0.0006
+Update 0041/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0013 grad=6.3331 loss=-0.0007
+Update 0042/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0039 grad=6.2893 loss=-0.0000
+Update 0043/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0029 grad=7.2516 loss=-0.0003
+Update 0044/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0034 grad=6.8698 loss=0.0003
+Update 0045/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0020 grad=11.6551 loss=0.0004
+Update 0046/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0023 grad=5.6761 loss=-0.0003
+Update 0047/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0027 grad=7.7423 loss=0.0000
+Update 0048/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0019 grad=7.3760 loss=0.0006
+Update 0049/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0029 grad=0.0000 loss=0.0000
+Update 0050/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0031 grad=9.8043 loss=-0.0005
+Update 0051/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0026 grad=7.6240 loss=-0.0006
+Update 0052/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0033 grad=6.3306 loss=0.0003
+Update 0053/100 reward=0.400 pass@1=0.000 clip=0.000 |post_move|=0.0017 grad=6.8619 loss=0.0002
+Update 0054/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0021 grad=3.9297 loss=-0.0000
+Update 0055/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0018 grad=0.0000 loss=0.0000
+Update 0056/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0027 grad=6.6633 loss=-0.0002
+Update 0057/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0011 grad=0.0000 loss=0.0000
+Update 0058/100 reward=0.400 pass@1=0.000 clip=0.000 |post_move|=0.0036 grad=5.3237 loss=0.0006
+Update 0059/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0032 grad=7.6459 loss=-0.0004
+Update 0060/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0034 grad=9.2095 loss=0.0003
+Update 0061/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0028 grad=7.6932 loss=-0.0002
+Update 0062/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0012 grad=7.6453 loss=-0.0002
+Update 0063/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0026 grad=4.6507 loss=0.0000
+Update 0064/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0018 grad=7.2596 loss=-0.0001
+Update 0065/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0012 grad=0.0000 loss=0.0000
+Update 0066/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0019 grad=4.5332 loss=-0.0001
+Update 0067/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0015 grad=6.2970 loss=0.0002
+Update 0068/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0016 grad=7.6212 loss=-0.0000
+Update 0069/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0019 grad=6.3674 loss=0.0002
+Update 0070/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0025 grad=7.9660 loss=-0.0004
+Update 0071/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0022 grad=4.3645 loss=-0.0005
+Update 0072/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0022 grad=6.8717 loss=0.0007
+Update 0073/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0027 grad=8.6731 loss=0.0001
+Update 0074/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0024 grad=3.8120 loss=0.0007
+Update 0075/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0022 grad=0.0000 loss=0.0000
+Update 0076/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0021 grad=7.4394 loss=0.0001
+Update 0077/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0029 grad=7.8545 loss=0.0002
+Update 0078/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0037 grad=7.6102 loss=0.0015
+Update 0079/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0031 grad=8.0540 loss=0.0008
+Update 0080/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0015 grad=0.0000 loss=0.0000
+Update 0081/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0049 grad=5.7855 loss=0.0000
+Update 0082/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0014 grad=0.0000 loss=0.0000
+Update 0083/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0062 grad=6.9446 loss=0.0004
+Update 0084/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0031 grad=7.7333 loss=-0.0003
+Update 0085/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0011 grad=0.0000 loss=0.0000
+Update 0086/100 reward=0.400 pass@1=0.000 clip=0.000 |post_move|=0.0033 grad=7.4040 loss=0.0002
+Update 0087/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0031 grad=6.8023 loss=0.0008
+Update 0088/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0033 grad=9.6242 loss=0.0000
+Update 0089/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0028 grad=8.3900 loss=0.0015
+Update 0090/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0025 grad=7.5397 loss=0.0004
+Update 0091/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0018 grad=8.1011 loss=0.0008
+Update 0092/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0036 grad=6.3897 loss=0.0001
+Update 0093/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0024 grad=6.6797 loss=-0.0006
+Update 0094/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0019 grad=0.0000 loss=0.0000
+Update 0095/100 reward=0.525 pass@1=0.250 clip=0.015 |post_move|=0.0053 grad=6.6193 loss=-0.0002
+Update 0096/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0021 grad=6.3091 loss=-0.0004
+Update 0097/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0014 grad=5.5646 loss=-0.0007
+Update 0098/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0023 grad=8.3966 loss=0.0019
+Update 0099/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0025 grad=7.9822 loss=-0.0005
+Update 0100/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0027 grad=6.9052 loss=0.0004
+Logs saved to outputs/live_ppo/live_ppo_mismatch_wikisql_seed1/logs.json
+Figure saved to outputs/live_ppo/live_ppo_mismatch_wikisql_seed1/metrics.png
+==> Running: mismatch, seed=2 (Mon May  4 01:59:21 AM EDT 2026)
+Using device: cuda
+Condition: mismatch  Task: wikisql  Seed: 2
+Using max_new_tokens=64 for WikiSQL
+Loading WikiSQL train dataset (2000 examples)...
+Loading WikiSQL tables from /home/hice1/jchen3392/Sync-Or-Sink/scripts/../data/data...
+Loaded 18585 tables
+Loading WikiSQL examples...
+Loaded 56355 examples
+Loading WikiSQL eval dataset (200 examples)...
+Loading WikiSQL tables from /home/hice1/jchen3392/Sync-Or-Sink/scripts/../data/data...
+Loaded 2716 tables
+Loading WikiSQL examples...
+Loaded 8421 examples
+Loading learner policy...
+Loading checkpoint from outputs/checkpoints/wikisql_sft/checkpoint.pt...
+Checkpoint loaded successfully
+Loading actor policy...
+Loading mismatch actor (torch.float16)...
+Update 0001/100 reward=0.625 pass@1=0.250 clip=0.012 |post_move|=0.0115 grad=6.9407 loss=0.0016
+Update 0002/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0043 grad=7.2082 loss=0.0006
+Update 0003/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0083 grad=7.0872 loss=-0.0003
+Update 0004/100 reward=0.625 pass@1=0.250 clip=0.016 |post_move|=0.0087 grad=13.0884 loss=-0.0002
+Update 0005/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0050 grad=7.6738 loss=-0.0017
+Update 0006/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0022 grad=6.5435 loss=0.0004
+Update 0007/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0043 grad=4.2585 loss=-0.0004
+Update 0008/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0020 grad=0.0000 loss=0.0000
+Update 0009/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0023 grad=4.8272 loss=-0.0003
+Update 0010/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0036 grad=12.6852 loss=0.0002
+Update 0011/100 reward=0.775 pass@1=0.750 clip=0.000 |post_move|=0.0043 grad=7.0287 loss=0.0004
+Update 0012/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0021 grad=7.5933 loss=-0.0008
+Update 0013/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0027 grad=5.1299 loss=-0.0003
+Update 0014/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0019 grad=0.0000 loss=0.0000
+Update 0015/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0018 grad=0.0000 loss=0.0000
+Update 0016/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0041 grad=5.0742 loss=-0.0007
+Update 0017/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0023 grad=0.0000 loss=0.0000
+Update 0018/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0023 grad=0.0000 loss=0.0000
+Update 0019/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0029 grad=5.7356 loss=-0.0003
+Update 0020/100 reward=0.400 pass@1=0.000 clip=0.000 |post_move|=0.0027 grad=7.6150 loss=-0.0001
+Update 0021/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0028 grad=6.2216 loss=0.0003
+Update 0022/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0034 grad=5.8725 loss=-0.0004
+Update 0023/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0020 grad=9.3958 loss=-0.0000
+Update 0024/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0011 grad=10.2440 loss=-0.0001
+Update 0025/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0018 grad=6.5708 loss=-0.0008
+Update 0026/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0012 grad=5.2017 loss=0.0004
+Update 0027/100 reward=0.400 pass@1=0.000 clip=0.000 |post_move|=0.0020 grad=4.5176 loss=0.0002
+Update 0028/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0024 grad=9.2388 loss=0.0007
+Update 0029/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0026 grad=6.5790 loss=0.0002
+Update 0030/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0015 grad=7.9542 loss=-0.0001
+Update 0031/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0018 grad=11.3118 loss=-0.0004
+Update 0032/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0034 grad=8.0251 loss=0.0017
+Update 0033/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0027 grad=8.0045 loss=0.0002
+Update 0034/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0023 grad=10.2777 loss=0.0005
+Update 0035/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0026 grad=9.6655 loss=-0.0005
+Update 0036/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0015 grad=7.9040 loss=-0.0001
+Update 0037/100 reward=0.775 pass@1=0.750 clip=0.000 |post_move|=0.0013 grad=9.4021 loss=0.0002
+Update 0038/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0024 grad=6.0537 loss=-0.0008
+Update 0039/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0047 grad=9.0666 loss=0.0002
+Update 0040/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0023 grad=8.8347 loss=0.0008
+Update 0041/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0024 grad=6.0588 loss=0.0004
+Update 0042/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0008 grad=7.0121 loss=0.0001
+Update 0043/100 reward=0.550 pass@1=0.500 clip=0.000 |post_move|=0.0033 grad=6.6023 loss=-0.0005
+Update 0044/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0042 grad=5.1965 loss=-0.0000
+Update 0045/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0024 grad=8.0245 loss=0.0002
+Update 0046/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0024 grad=8.3028 loss=0.0008
+Update 0047/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0033 grad=5.3724 loss=-0.0005
+Update 0048/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0014 grad=6.4384 loss=0.0001
+Update 0049/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0022 grad=0.0000 loss=0.0000
+Update 0050/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0022 grad=0.0000 loss=0.0000
+Update 0051/100 reward=0.775 pass@1=0.750 clip=0.000 |post_move|=0.0018 grad=8.3773 loss=0.0003
+Update 0052/100 reward=0.400 pass@1=0.000 clip=0.000 |post_move|=0.0028 grad=6.5158 loss=-0.0000
+Update 0053/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0018 grad=4.4247 loss=-0.0003
+Update 0054/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0025 grad=3.3505 loss=0.0003
+Update 0055/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0034 grad=5.6254 loss=-0.0002
+Update 0056/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0021 grad=7.9234 loss=-0.0004
+Update 0057/100 reward=0.775 pass@1=0.750 clip=0.000 |post_move|=0.0031 grad=5.5575 loss=-0.0004
+Update 0058/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0048 grad=5.0664 loss=-0.0004
+Update 0059/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0028 grad=7.9556 loss=0.0000
+Update 0060/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0027 grad=7.2901 loss=0.0002
+Update 0061/100 reward=0.775 pass@1=0.750 clip=0.000 |post_move|=0.0027 grad=7.1065 loss=-0.0002
+Update 0062/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0024 grad=6.5748 loss=0.0003
+Update 0063/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0022 grad=11.2828 loss=-0.0010
+Update 0064/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0027 grad=0.0000 loss=0.0000
+Update 0065/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0023 grad=8.3199 loss=-0.0002
+Update 0066/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0022 grad=0.0000 loss=0.0000
+Update 0067/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0030 grad=7.8167 loss=-0.0006
+Update 0068/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0029 grad=7.4932 loss=0.0014
+Update 0069/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0027 grad=8.9476 loss=-0.0006
+Update 0070/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0017 grad=0.0000 loss=0.0000
+Update 0071/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0032 grad=0.0000 loss=0.0000
+Update 0072/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0016 grad=0.0000 loss=0.0000
+Update 0073/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0026 grad=0.0000 loss=0.0000
+Update 0074/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0017 grad=7.8317 loss=0.0001
+Update 0075/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0022 grad=0.0000 loss=0.0000
+Update 0076/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0026 grad=6.8130 loss=-0.0008
+Update 0077/100 reward=0.425 pass@1=0.250 clip=0.000 |post_move|=0.0019 grad=5.8452 loss=0.0004
+Update 0078/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0037 grad=6.1247 loss=-0.0011
+Update 0079/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0027 grad=6.3848 loss=0.0001
+Update 0080/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0012 grad=9.3152 loss=0.0009
+Update 0081/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0024 grad=7.0132 loss=0.0001
+Update 0082/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0025 grad=5.4494 loss=-0.0003
+Update 0083/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0015 grad=0.0000 loss=0.0000
+Update 0084/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0027 grad=4.7270 loss=0.0001
+Update 0085/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0030 grad=5.2357 loss=0.0006
+Update 0086/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0015 grad=6.9220 loss=-0.0011
+Update 0087/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0024 grad=6.0184 loss=-0.0006
+Update 0088/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0023 grad=7.4990 loss=0.0008
+Update 0089/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0030 grad=9.0962 loss=0.0010
+Update 0090/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0027 grad=6.9432 loss=-0.0002
+Update 0091/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0014 grad=8.7801 loss=0.0003
+Update 0092/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0021 grad=4.3475 loss=0.0003
+Update 0093/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0023 grad=3.4230 loss=-0.0005
+Update 0094/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0044 grad=9.3873 loss=-0.0003
+Update 0095/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0026 grad=0.0000 loss=0.0000
+Update 0096/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0024 grad=4.6312 loss=-0.0007
+Update 0097/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0027 grad=11.6046 loss=-0.0014
+Update 0098/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0017 grad=5.2805 loss=0.0001
+Update 0099/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0050 grad=5.7385 loss=-0.0010
+Update 0100/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0033 grad=8.6539 loss=-0.0009
+Logs saved to outputs/live_ppo/live_ppo_mismatch_wikisql_seed2/logs.json
+Figure saved to outputs/live_ppo/live_ppo_mismatch_wikisql_seed2/metrics.png
+==> Running: rescored, seed=0 (Mon May  4 02:02:25 AM EDT 2026)
+Using device: cuda
+Condition: rescored  Task: wikisql  Seed: 0
+Using max_new_tokens=64 for WikiSQL
+Loading WikiSQL train dataset (2000 examples)...
+Loading WikiSQL tables from /home/hice1/jchen3392/Sync-Or-Sink/scripts/../data/data...
+Loaded 18585 tables
+Loading WikiSQL examples...
+Loaded 56355 examples
+Loading WikiSQL eval dataset (200 examples)...
+Loading WikiSQL tables from /home/hice1/jchen3392/Sync-Or-Sink/scripts/../data/data...
+Loaded 2716 tables
+Loading WikiSQL examples...
+Loaded 8421 examples
+Loading learner policy...
+Loading checkpoint from outputs/checkpoints/wikisql_sft/checkpoint.pt...
+Checkpoint loaded successfully
+Loading actor policy...
+Loading mismatch actor (torch.float16)...
+Update 0001/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0080 grad=5.7338 loss=-0.0000
+Update 0002/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0020 grad=0.0000 loss=0.0000
+Update 0003/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0027 grad=6.3859 loss=0.0000
+Update 0004/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0039 grad=4.4521 loss=0.0000
+Update 0005/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0011 grad=0.0000 loss=0.0000
+Update 0006/100 reward=0.400 pass@1=0.000 clip=0.000 |post_move|=0.0032 grad=4.6213 loss=0.0000
+Update 0007/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0032 grad=6.5664 loss=0.0000
+Update 0008/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0030 grad=5.2489 loss=0.0000
+Update 0009/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0046 grad=5.9052 loss=0.0000
+Update 0010/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0019 grad=6.6401 loss=-0.0000
+Update 0011/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0012 grad=6.3841 loss=0.0000
+Update 0012/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0034 grad=8.6999 loss=-0.0000
+Update 0013/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0011 grad=0.0000 loss=0.0000
+Update 0014/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0020 grad=6.5666 loss=0.0000
+Update 0015/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0033 grad=8.0911 loss=0.0000
+Update 0016/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0008 grad=7.6256 loss=0.0000
+Update 0017/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0016 grad=10.3570 loss=0.0000
+Update 0018/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0011 grad=4.7188 loss=0.0000
+Update 0019/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0031 grad=8.9516 loss=0.0000
+Update 0020/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0011 grad=5.2589 loss=0.0000
+Update 0021/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0012 grad=7.5153 loss=0.0000
+Update 0022/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0010 grad=7.9683 loss=0.0000
+Update 0023/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0011 grad=7.2828 loss=0.0000
+Update 0024/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0015 grad=4.8035 loss=0.0000
+Update 0025/100 reward=0.775 pass@1=0.750 clip=0.000 |post_move|=0.0024 grad=4.3311 loss=-0.0000
+Update 0026/100 reward=0.400 pass@1=0.000 clip=0.000 |post_move|=0.0016 grad=7.0703 loss=0.0000
+Update 0027/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0020 grad=7.5345 loss=-0.0000
+Update 0028/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0013 grad=7.5035 loss=0.0000
+Update 0029/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0007 grad=0.0000 loss=0.0000
+Update 0030/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0012 grad=4.7659 loss=-0.0000
+Update 0031/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0016 grad=6.1718 loss=0.0000
+Update 0032/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0013 grad=8.4334 loss=-0.0000
+Update 0033/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0003 grad=0.0000 loss=0.0000
+Update 0034/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0006 grad=0.0000 loss=0.0000
+Update 0035/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0006 grad=4.6787 loss=0.0000
+Update 0036/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0010 grad=5.7109 loss=0.0000
+Update 0037/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0024 grad=6.6982 loss=0.0000
+Update 0038/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0007 grad=7.9394 loss=0.0000
+Update 0039/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0011 grad=0.0000 loss=0.0000
+Update 0040/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0013 grad=5.3007 loss=0.0000
+Update 0041/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0010 grad=5.1741 loss=0.0000
+Update 0042/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0009 grad=0.0000 loss=0.0000
+Update 0043/100 reward=0.400 pass@1=0.000 clip=0.000 |post_move|=0.0016 grad=7.3911 loss=0.0000
+Update 0044/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0010 grad=9.2570 loss=0.0000
+Update 0045/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0008 grad=10.8747 loss=0.0000
+Update 0046/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0022 grad=7.9253 loss=0.0000
+Update 0047/100 reward=0.775 pass@1=0.750 clip=0.000 |post_move|=0.0040 grad=9.4536 loss=-0.0000
+Update 0048/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0012 grad=6.2441 loss=0.0000
+Update 0049/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0010 grad=7.3213 loss=0.0000
+Update 0050/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0008 grad=0.0000 loss=0.0000
+Update 0051/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0031 grad=11.8686 loss=-0.0000
+Update 0052/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0005 grad=7.8846 loss=0.0000
+Update 0053/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0006 grad=5.8358 loss=0.0000
+Update 0054/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0009 grad=0.0000 loss=0.0000
+Update 0055/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0018 grad=5.1718 loss=0.0000
+Update 0056/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0005 grad=8.5709 loss=0.0000
+Update 0057/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0010 grad=6.5756 loss=0.0000
+Update 0058/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0025 grad=9.8317 loss=0.0000
+Update 0059/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0012 grad=7.9552 loss=0.0000
+Update 0060/100 reward=0.775 pass@1=0.750 clip=0.000 |post_move|=0.0018 grad=7.1719 loss=-0.0000
+Update 0061/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0006 grad=4.8579 loss=0.0000
+Update 0062/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0007 grad=4.9132 loss=0.0000
+Update 0063/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0007 grad=0.0000 loss=0.0000
+Update 0064/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0011 grad=5.8626 loss=0.0000
+Update 0065/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0022 grad=7.9790 loss=0.0000
+Update 0066/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0022 grad=5.8812 loss=0.0000
+Update 0067/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0028 grad=9.7654 loss=0.0000
+Update 0068/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0011 grad=5.0388 loss=0.0000
+Update 0069/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0005 grad=0.0000 loss=0.0000
+Update 0070/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0029 grad=6.0848 loss=0.0000
+Update 0071/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0023 grad=7.1234 loss=0.0000
+Update 0072/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0008 grad=5.9825 loss=0.0000
+Update 0073/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0005 grad=0.0000 loss=0.0000
+Update 0074/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0008 grad=6.9743 loss=0.0000
+Update 0075/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0013 grad=3.4212 loss=0.0000
+Update 0076/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0020 grad=8.3673 loss=0.0000
+Update 0077/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0012 grad=7.7864 loss=0.0000
+Update 0078/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0019 grad=4.6653 loss=0.0000
+Update 0079/100 reward=0.625 pass@1=0.250 clip=0.012 |post_move|=0.0036 grad=7.4603 loss=0.0000
+Update 0080/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0007 grad=7.7584 loss=0.0000
+Update 0081/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0012 grad=8.7015 loss=-0.0000
+Update 0082/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0009 grad=6.9104 loss=-0.0000
+Update 0083/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0017 grad=8.1706 loss=0.0000
+Update 0084/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0010 grad=5.8128 loss=0.0000
+Update 0085/100 reward=0.200 pass@1=0.000 clip=0.000 |post_move|=0.0018 grad=5.0057 loss=0.0000
+Update 0086/100 reward=0.775 pass@1=0.750 clip=0.000 |post_move|=0.0021 grad=4.6421 loss=-0.0000
+Update 0087/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0010 grad=4.3177 loss=0.0000
+Update 0088/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0013 grad=8.3344 loss=0.0000
+Update 0089/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0009 grad=0.0000 loss=0.0000
+Update 0090/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0003 grad=9.2583 loss=-0.0000
+Update 0091/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0005 grad=7.5818 loss=0.0000
+Update 0092/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0010 grad=5.3260 loss=-0.0000
+Update 0093/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0025 grad=7.1852 loss=0.0000
+Update 0094/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0027 grad=9.4908 loss=0.0000
+Update 0095/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0011 grad=6.3284 loss=0.0000
+Update 0096/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0004 grad=5.6845 loss=0.0000
+Update 0097/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0025 grad=7.6386 loss=-0.0000
+Update 0098/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0014 grad=4.5235 loss=0.0000
+Update 0099/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0009 grad=5.9899 loss=0.0000
+Update 0100/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0009 grad=6.6373 loss=0.0000
+Logs saved to outputs/live_ppo/live_ppo_rescored_wikisql_seed0/logs.json
+Figure saved to outputs/live_ppo/live_ppo_rescored_wikisql_seed0/metrics.png
+==> Running: rescored, seed=1 (Mon May  4 02:05:27 AM EDT 2026)
+Using device: cuda
+Condition: rescored  Task: wikisql  Seed: 1
+Using max_new_tokens=64 for WikiSQL
+Loading WikiSQL train dataset (2000 examples)...
+Loading WikiSQL tables from /home/hice1/jchen3392/Sync-Or-Sink/scripts/../data/data...
+Loaded 18585 tables
+Loading WikiSQL examples...
+Loaded 56355 examples
+Loading WikiSQL eval dataset (200 examples)...
+Loading WikiSQL tables from /home/hice1/jchen3392/Sync-Or-Sink/scripts/../data/data...
+Loaded 2716 tables
+Loading WikiSQL examples...
+Loaded 8421 examples
+Loading learner policy...
+Loading checkpoint from outputs/checkpoints/wikisql_sft/checkpoint.pt...
+Checkpoint loaded successfully
+Loading actor policy...
+Loading mismatch actor (torch.float16)...
+Update 0001/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0090 grad=6.8841 loss=0.0000
+Update 0002/100 reward=0.625 pass@1=0.250 clip=0.015 |post_move|=0.0099 grad=11.7183 loss=-0.0000
+Update 0003/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0053 grad=6.2662 loss=0.0000
+Update 0004/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0012 grad=5.8872 loss=0.0000
+Update 0005/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0033 grad=5.7879 loss=0.0000
+Update 0006/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0053 grad=10.4692 loss=0.0000
+Update 0007/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0024 grad=10.5286 loss=0.0000
+Update 0008/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0030 grad=8.3932 loss=0.0000
+Update 0009/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0013 grad=4.6576 loss=0.0000
+Update 0010/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0008 grad=0.0000 loss=0.0000
+Update 0011/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0016 grad=4.3869 loss=0.0000
+Update 0012/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0024 grad=6.2959 loss=-0.0000
+Update 0013/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0006 grad=0.0000 loss=0.0000
+Update 0014/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0034 grad=4.9920 loss=0.0000
+Update 0015/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0016 grad=5.3198 loss=-0.0000
+Update 0016/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0018 grad=6.3757 loss=0.0000
+Update 0017/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0028 grad=6.8122 loss=-0.0000
+Update 0018/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0021 grad=4.0534 loss=-0.0000
+Update 0019/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0009 grad=7.4155 loss=0.0000
+Update 0020/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0020 grad=7.8419 loss=0.0000
+Update 0021/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0005 grad=0.0000 loss=0.0000
+Update 0022/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0019 grad=7.2804 loss=-0.0000
+Update 0023/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0020 grad=6.0642 loss=-0.0000
+Update 0024/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0022 grad=5.7255 loss=0.0000
+Update 0025/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0018 grad=6.9279 loss=0.0000
+Update 0026/100 reward=0.425 pass@1=0.250 clip=0.000 |post_move|=0.0024 grad=7.4897 loss=0.0000
+Update 0027/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0007 grad=5.7153 loss=0.0000
+Update 0028/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0011 grad=3.6609 loss=0.0000
+Update 0029/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0012 grad=0.0000 loss=0.0000
+Update 0030/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0008 grad=0.0000 loss=0.0000
+Update 0031/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0011 grad=5.8669 loss=0.0000
+Update 0032/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0013 grad=7.4376 loss=0.0000
+Update 0033/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0011 grad=5.1838 loss=0.0000
+Update 0034/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0011 grad=5.5890 loss=0.0000
+Update 0035/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0030 grad=5.0948 loss=-0.0000
+Update 0036/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0018 grad=6.4085 loss=0.0000
+Update 0037/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0023 grad=7.9383 loss=0.0000
+Update 0038/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0010 grad=4.5259 loss=0.0000
+Update 0039/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0011 grad=5.2226 loss=0.0000
+Update 0040/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0011 grad=7.2069 loss=0.0000
+Update 0041/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0005 grad=4.0979 loss=0.0000
+Update 0042/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0014 grad=7.6699 loss=-0.0000
+Update 0043/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0010 grad=6.6805 loss=0.0000
+Update 0044/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0027 grad=9.1234 loss=-0.0000
+Update 0045/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0013 grad=7.5009 loss=0.0000
+Update 0046/100 reward=0.625 pass@1=0.250 clip=0.013 |post_move|=0.0071 grad=9.7319 loss=-0.0000
+Update 0047/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0012 grad=8.6451 loss=-0.0000
+Update 0048/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0006 grad=0.0000 loss=0.0000
+Update 0049/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0016 grad=5.8543 loss=0.0000
+Update 0050/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0011 grad=9.4691 loss=0.0000
+Update 0051/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0014 grad=6.5823 loss=0.0000
+Update 0052/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0014 grad=6.8353 loss=-0.0000
+Update 0053/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0009 grad=4.9685 loss=-0.0000
+Update 0054/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0023 grad=4.8104 loss=-0.0000
+Update 0055/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0009 grad=0.0000 loss=0.0000
+Update 0056/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0017 grad=4.6548 loss=0.0000
+Update 0057/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0006 grad=0.0000 loss=0.0000
+Update 0058/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0025 grad=4.8148 loss=0.0000
+Update 0059/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0009 grad=0.0000 loss=0.0000
+Update 0060/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0014 grad=7.4403 loss=-0.0000
+Update 0061/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0016 grad=8.7809 loss=0.0000
+Update 0062/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0007 grad=3.4006 loss=0.0000
+Update 0063/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0017 grad=5.4681 loss=0.0000
+Update 0064/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0015 grad=6.2065 loss=0.0000
+Update 0065/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0006 grad=0.0000 loss=0.0000
+Update 0066/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0010 grad=4.2613 loss=0.0000
+Update 0067/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0020 grad=5.9823 loss=0.0000
+Update 0068/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0022 grad=5.4968 loss=-0.0000
+Update 0069/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0019 grad=6.0211 loss=-0.0000
+Update 0070/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0006 grad=8.2623 loss=-0.0000
+Update 0071/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0011 grad=6.3261 loss=0.0000
+Update 0072/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0032 grad=8.7077 loss=-0.0000
+Update 0073/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0026 grad=6.0496 loss=0.0000
+Update 0074/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0030 grad=8.1301 loss=-0.0000
+Update 0075/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0007 grad=0.0000 loss=0.0000
+Update 0076/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0016 grad=8.8915 loss=0.0000
+Update 0077/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0018 grad=6.1057 loss=-0.0000
+Update 0078/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0012 grad=6.5200 loss=0.0000
+Update 0079/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0029 grad=8.5828 loss=-0.0000
+Update 0080/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0004 grad=0.0000 loss=0.0000
+Update 0081/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0028 grad=5.9664 loss=0.0000
+Update 0082/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0029 grad=6.8026 loss=0.0000
+Update 0083/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0024 grad=8.3709 loss=0.0000
+Update 0084/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0013 grad=11.6427 loss=0.0000
+Update 0085/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0003 grad=0.0000 loss=0.0000
+Update 0086/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0004 grad=0.0000 loss=0.0000
+Update 0087/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0024 grad=6.5524 loss=0.0000
+Update 0088/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0017 grad=6.1514 loss=0.0000
+Update 0089/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0022 grad=5.7209 loss=0.0000
+Update 0090/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0019 grad=9.0112 loss=0.0000
+Update 0091/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0010 grad=7.7824 loss=0.0000
+Update 0092/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0017 grad=5.5542 loss=0.0000
+Update 0093/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0013 grad=6.0856 loss=0.0000
+Update 0094/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0007 grad=0.0000 loss=0.0000
+Update 0095/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0014 grad=5.5525 loss=0.0000
+Update 0096/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0011 grad=7.9585 loss=0.0000
+Update 0097/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0012 grad=7.6919 loss=0.0000
+Update 0098/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0014 grad=8.3618 loss=0.0000
+Update 0099/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0009 grad=7.7751 loss=0.0000
+Update 0100/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0012 grad=5.9518 loss=-0.0000
+Logs saved to outputs/live_ppo/live_ppo_rescored_wikisql_seed1/logs.json
+Figure saved to outputs/live_ppo/live_ppo_rescored_wikisql_seed1/metrics.png
+==> Running: rescored, seed=2 (Mon May  4 02:08:23 AM EDT 2026)
+Using device: cuda
+Condition: rescored  Task: wikisql  Seed: 2
+Using max_new_tokens=64 for WikiSQL
+Loading WikiSQL train dataset (2000 examples)...
+Loading WikiSQL tables from /home/hice1/jchen3392/Sync-Or-Sink/scripts/../data/data...
+Loaded 18585 tables
+Loading WikiSQL examples...
+Loaded 56355 examples
+Loading WikiSQL eval dataset (200 examples)...
+Loading WikiSQL tables from /home/hice1/jchen3392/Sync-Or-Sink/scripts/../data/data...
+Loaded 2716 tables
+Loading WikiSQL examples...
+Loaded 8421 examples
+Loading learner policy...
+Loading checkpoint from outputs/checkpoints/wikisql_sft/checkpoint.pt...
+Checkpoint loaded successfully
+Loading actor policy...
+Loading mismatch actor (torch.float16)...
+Update 0001/100 reward=0.625 pass@1=0.250 clip=0.012 |post_move|=0.0128 grad=7.0415 loss=-0.0000
+Update 0002/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0049 grad=7.1857 loss=0.0000
+Update 0003/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0079 grad=7.0839 loss=0.0000
+Update 0004/100 reward=0.625 pass@1=0.250 clip=0.016 |post_move|=0.0078 grad=13.2572 loss=-0.0000
+Update 0005/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0027 grad=7.6133 loss=-0.0000
+Update 0006/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0017 grad=6.5494 loss=0.0000
+Update 0007/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0027 grad=4.2955 loss=0.0000
+Update 0008/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0013 grad=0.0000 loss=0.0000
+Update 0009/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0014 grad=4.8030 loss=-0.0000
+Update 0010/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0026 grad=12.8507 loss=0.0000
+Update 0011/100 reward=0.775 pass@1=0.750 clip=0.000 |post_move|=0.0035 grad=6.8843 loss=-0.0000
+Update 0012/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0013 grad=7.6782 loss=0.0000
+Update 0013/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0016 grad=5.1218 loss=-0.0000
+Update 0014/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0011 grad=0.0000 loss=0.0000
+Update 0015/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0007 grad=0.0000 loss=0.0000
+Update 0016/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0025 grad=5.0658 loss=0.0000
+Update 0017/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0009 grad=0.0000 loss=0.0000
+Update 0018/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0007 grad=0.0000 loss=0.0000
+Update 0019/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0018 grad=5.7248 loss=0.0000
+Update 0020/100 reward=0.400 pass@1=0.000 clip=0.000 |post_move|=0.0016 grad=7.5926 loss=0.0000
+Update 0021/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0017 grad=6.2405 loss=-0.0000
+Update 0022/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0018 grad=5.8756 loss=-0.0000
+Update 0023/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0016 grad=9.2906 loss=0.0000
+Update 0024/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0008 grad=10.2643 loss=0.0000
+Update 0025/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0011 grad=6.5665 loss=0.0000
+Update 0026/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0011 grad=5.2035 loss=0.0000
+Update 0027/100 reward=0.400 pass@1=0.000 clip=0.000 |post_move|=0.0015 grad=4.4853 loss=0.0000
+Update 0028/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0022 grad=9.2391 loss=0.0000
+Update 0029/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0014 grad=6.6325 loss=0.0000
+Update 0030/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0005 grad=8.2961 loss=-0.0000
+Update 0031/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0010 grad=10.2045 loss=0.0000
+Update 0032/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0023 grad=7.8108 loss=0.0000
+Update 0033/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0020 grad=7.9728 loss=0.0000
+Update 0034/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0015 grad=10.2373 loss=0.0000
+Update 0035/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0017 grad=9.6892 loss=-0.0000
+Update 0036/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0008 grad=7.9213 loss=-0.0000
+Update 0037/100 reward=0.775 pass@1=0.750 clip=0.000 |post_move|=0.0005 grad=9.3759 loss=-0.0000
+Update 0038/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0010 grad=6.0557 loss=0.0000
+Update 0039/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0034 grad=9.0050 loss=-0.0000
+Update 0040/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0010 grad=8.7921 loss=0.0000
+Update 0041/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0022 grad=6.0430 loss=0.0000
+Update 0042/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0005 grad=7.0349 loss=-0.0000
+Update 0043/100 reward=0.550 pass@1=0.500 clip=0.000 |post_move|=0.0019 grad=6.6247 loss=0.0000
+Update 0044/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0029 grad=5.1968 loss=-0.0000
+Update 0045/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0011 grad=8.2043 loss=0.0000
+Update 0046/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0017 grad=8.2963 loss=-0.0000
+Update 0047/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0022 grad=5.3526 loss=-0.0000
+Update 0048/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0011 grad=6.4552 loss=0.0000
+Update 0049/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0012 grad=0.0000 loss=0.0000
+Update 0050/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0010 grad=0.0000 loss=0.0000
+Update 0051/100 reward=0.775 pass@1=0.750 clip=0.000 |post_move|=0.0015 grad=8.3421 loss=-0.0000
+Update 0052/100 reward=0.400 pass@1=0.000 clip=0.000 |post_move|=0.0019 grad=6.4751 loss=0.0000
+Update 0053/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0007 grad=4.4170 loss=0.0000
+Update 0054/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0022 grad=3.3412 loss=-0.0000
+Update 0055/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0017 grad=5.1295 loss=0.0000
+Update 0056/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0008 grad=9.6464 loss=0.0000
+Update 0057/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0009 grad=0.0000 loss=0.0000
+Update 0058/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0033 grad=8.7455 loss=-0.0000
+Update 0059/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0022 grad=6.4579 loss=0.0000
+Update 0060/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0015 grad=7.0534 loss=0.0000
+Update 0061/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0028 grad=6.4813 loss=-0.0000
+Update 0062/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0009 grad=6.5397 loss=0.0000
+Update 0063/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0009 grad=11.2493 loss=0.0000
+Update 0064/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0012 grad=0.0000 loss=0.0000
+Update 0065/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0013 grad=8.3014 loss=-0.0000
+Update 0066/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0011 grad=0.0000 loss=0.0000
+Update 0067/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0014 grad=10.2630 loss=0.0000
+Update 0068/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0020 grad=7.2640 loss=0.0000
+Update 0069/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0018 grad=8.8513 loss=-0.0000
+Update 0070/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0005 grad=0.0000 loss=0.0000
+Update 0071/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0009 grad=0.0000 loss=0.0000
+Update 0072/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0008 grad=0.0000 loss=0.0000
+Update 0073/100 reward=0.500 pass@1=0.000 clip=0.000 |post_move|=0.0006 grad=0.0000 loss=0.0000
+Update 0074/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0014 grad=6.8611 loss=0.0000
+Update 0075/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0009 grad=0.0000 loss=0.0000
+Update 0076/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0011 grad=6.7354 loss=-0.0000
+Update 0077/100 reward=0.425 pass@1=0.250 clip=0.000 |post_move|=0.0013 grad=5.8111 loss=0.0000
+Update 0078/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0028 grad=5.8899 loss=0.0000
+Update 0079/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0018 grad=8.4314 loss=0.0000
+Update 0080/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0009 grad=4.2864 loss=-0.0000
+Update 0081/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0018 grad=7.2997 loss=0.0000
+Update 0082/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0011 grad=6.3715 loss=0.0000
+Update 0083/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0007 grad=0.0000 loss=0.0000
+Update 0084/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0020 grad=5.9703 loss=0.0000
+Update 0085/100 reward=0.650 pass@1=0.500 clip=0.000 |post_move|=0.0018 grad=6.4372 loss=-0.0000
+Update 0086/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0018 grad=7.9193 loss=-0.0000
+Update 0087/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0018 grad=6.8520 loss=-0.0000
+Update 0088/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0008 grad=0.0000 loss=0.0000
+Update 0089/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0019 grad=10.1390 loss=0.0000
+Update 0090/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0021 grad=7.8502 loss=0.0000
+Update 0091/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0011 grad=6.9276 loss=0.0000
+Update 0092/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0021 grad=7.6086 loss=0.0000
+Update 0093/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0020 grad=7.2643 loss=-0.0000
+Update 0094/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0009 grad=7.8045 loss=0.0000
+Update 0095/100 reward=1.000 pass@1=1.000 clip=0.000 |post_move|=0.0009 grad=0.0000 loss=0.0000
+Update 0096/100 reward=0.750 pass@1=0.500 clip=0.000 |post_move|=0.0025 grad=7.1979 loss=0.0000
+Update 0097/100 reward=0.625 pass@1=0.250 clip=0.000 |post_move|=0.0017 grad=10.9496 loss=0.0000
+Update 0098/100 reward=0.525 pass@1=0.250 clip=0.000 |post_move|=0.0017 grad=5.2872 loss=-0.0000
+Update 0099/100 reward=0.400 pass@1=0.000 clip=0.000 |post_move|=0.0035 grad=9.0052 loss=0.0000
+Update 0100/100 reward=0.875 pass@1=0.750 clip=0.000 |post_move|=0.0009 grad=6.3354 loss=0.0000
+Logs saved to outputs/live_ppo/live_ppo_rescored_wikisql_seed2/logs.json
+Figure saved to outputs/live_ppo/live_ppo_rescored_wikisql_seed2/metrics.png
+==> Mismatch Sweep finished: Mon May  4 02:11:24 AM EDT 2026
+---------------------------------------
+Begin Slurm Epilog: May-04-2026 02:11:24
+Job ID:        5248904
+User ID:       jchen3392
+Account:       cse
+Job name:      mismatch_sweep
+Resources:     cpu=1,gres/gpu:a100=1,mem=24G,node=1
+Rsrc Used:     cput=00:18:18,vmem=0,walltime=00:18:18,mem=5811668K,energy_used=0
+Partition:     coc-gpu
+QOS:           coc-ice
+Nodes:         atl1-1-03-007-33-0
+---------------------------------------

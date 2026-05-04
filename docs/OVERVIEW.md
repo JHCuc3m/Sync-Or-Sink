@@ -167,6 +167,7 @@ PPO stability is measured by: `approx_kl`, `clip_fraction`, `entropy`, reward me
 
 **Completed (LR=1e-5, 200 updates — primary results):**
 - ✅ Sync baseline — seeds 0,1,2; eval pass@1 ~48%, post-update clip ~1.6%
+- ✅ Mismatch — seeds 0,1,2; pre-update ratio var 0.0000376 (nonzero, H1 confirmed)
 - ✅ Rescored — seeds 0,1,2; pre-update ratio var = 0 exactly (mitigation holds at LR=1e-5)
 - ✅ Staleness sweep — L=1,2,4,8 × seeds 0–2; pre-update clip fraction monotonically 0%→5.3% (L=8), strongly supports H2
 - ✅ Stale+mismatch — L=2,4,8 × seeds 0–2; only condition to fall below sync baseline (L=4,8), supports H3
@@ -175,17 +176,13 @@ PPO stability is measured by: `approx_kl`, `clip_fraction`, `entropy`, reward me
 - ✅ SFT warm-start → `scripts/sft_wikisql.py` (loss: 5.05 → 0.37, valid SQL: 100%)
 - ✅ Sync/mismatch/rescored/stale(L=4)/stale_mismatch(L=2) — all three seeds
 
-**Pending:**
-- ⏳ Mismatch condition re-run at LR=1e-5 (rescored done, mismatch not yet)
-
-**Next steps:**
-1. Run mismatch sweep at LR=1e-5 (`sbatch jobs/run_mismatch_sweep.sbatch`)
-2. Generate comparison plots (lag vs pre-clip, lag vs ratio-var, training curves)
-3. Final report (ICLR template, ≤8 pages)
+**All experiments complete. Next steps:**
+1. Generate comparison plots (lag vs pre-clip, lag vs ratio-var, sync/mismatch/rescored training curves)
+2. Final report (ICLR template, ≤8 pages)
 
 **Hypothesis status:**
-- H1 (logprob mismatch → ratio noise): ✅ Supported at LR=1e-6; rescoring mitigation confirmed at LR=1e-5
-- H2 (staleness → off-policy bias): ✅ Strongly supported — pre-clip 0%→5.3% monotonic with lag
+- H1 (logprob mismatch → ratio noise): ✅ Supported — mismatch pre-var 0.0000376 vs 0 for sync/rescored; confirmed at LR=1e-5; rescoring eliminates it
+- H2 (staleness → off-policy bias): ✅ Strongly supported — pre-clip 0%→5.3% monotonic with lag at LR=1e-5
 - H3 (combined drift → task degradation): ⚠️ Partially supported — stale+mismatch L=4,8 below sync; stale-only does not degrade
 
 See `docs/FINDINGS.md` for detailed results and `docs/todos_next.md` for task tracking.

@@ -279,48 +279,54 @@ Ran mismatch (fp16 actor logprobs, fp32 learner) and rescored (fp16 actor, fp32 
 
 ---
 
-## Phase 5 Re-run: Mismatch Sweep at LR=1e-5, 200 Updates (Rescored only so far)
+## Phase 5 Re-run: Mismatch Sweep at LR=1e-5, 200 Updates
 
 ### Summary
 
-Re-ran the `rescored` condition with LR=1e-5 and 200 updates to test whether stronger gradient steps expose instability or change the mismatch mitigation picture. The `mismatch` condition re-run is pending. Key finding: rescoring continues to eliminate pre-update ratio variance at higher LR, but the larger step size activates PPO clipping and slightly degrades task performance.
+Re-ran `mismatch` and `rescored` conditions at LR=1e-5, 200 updates, seeds 0–2. Key findings: mismatch continues to produce a small but consistent nonzero pre-update ratio variance (H1 confirmed at higher LR); rescoring eliminates it exactly; post-update clipping is now active in both conditions (~1.4–1.6%). Task performance is highest in mismatch, with rescored seed 2 being a notable outlier.
 
 ### Configuration
 
-- Condition: `rescored`, Lag: 0, LR: **1e-5**, Updates: **200**, Batch size: 4
+- Conditions: `mismatch`, `rescored`, Lag: 0, LR: **1e-5**, Updates: **200**, Batch size: 4
+
+### Observed Results — Mismatch at LR=1e-5
+
+| Seed | Eval Reward | Eval Pass@1 | Clip Frac (pre) | Clip Frac (post) | Ratio Var (pre) | Logprob Move (steady) |
+|------|-------------|-------------|-----------------|------------------|-----------------|-----------------------|
+| 0 | 0.740 | 0.480 | 0.00000 | 0.01482 | 0.0000363 | 0.01334 |
+| 1 | 0.750 | 0.500 | 0.00000 | 0.01835 | 0.0000370 | 0.01620 |
+| 2 | 0.740 | 0.480 | 0.00000 | 0.01422 | 0.0000394 | 0.02079 |
+| **Mean** | **0.743** | **0.487** | **0.00000** | **0.01580** | **0.0000376** | **0.01678** |
 
 ### Observed Results — Rescored at LR=1e-5
 
-| Seed | Eval Reward | Eval Pass@1 | Clip Frac (post) | Ratio Var (pre) | Ratio Var (post) | Abs Logprob Move (steady) |
-|------|-------------|-------------|------------------|-----------------|------------------|---------------------------|
-| 0 | 0.710 | 0.420 | 0.01290 | 0.0000000 | 0.0048220 | 0.01498 |
-| 1 | 0.740 | 0.480 | 0.01427 | 0.0000000 | 0.0370804 | 0.01431 |
-| 2 | 0.568 | 0.360 | 0.01418 | 0.0000000 | 0.0111246 | 0.01823 |
-| **Mean** | **0.673** | **0.420** | **0.01378** | **0.0000000** | **0.0176757** | **0.01584** |
+| Seed | Eval Reward | Eval Pass@1 | Clip Frac (pre) | Clip Frac (post) | Ratio Var (pre) | Logprob Move (steady) |
+|------|-------------|-------------|-----------------|------------------|-----------------|-----------------------|
+| 0 | 0.710 | 0.420 | 0.00000 | 0.01290 | 0.0000000 | 0.01498 |
+| 1 | 0.740 | 0.480 | 0.00000 | 0.01427 | 0.0000000 | 0.01431 |
+| 2 | 0.568 | 0.360 | 0.00000 | 0.01418 | 0.0000000 | 0.01823 |
+| **Mean** | **0.673** | **0.420** | **0.00000** | **0.01378** | **0.0000000** | **0.01584** |
 
-### Comparison: Rescored LR=1e-6 vs LR=1e-5
+### Full Comparison: Sync vs Mismatch vs Rescored at LR=1e-5
 
-| Metric | Rescored LR=1e-6 (100 steps) | Rescored LR=1e-5 (200 steps) | Change |
-|--------|------------------------------|------------------------------|--------|
-| Eval Reward | 0.735 | 0.673 | −8.4% |
-| Eval Pass@1 | 0.487 | 0.420 | −13.7% |
-| Clip Frac (post) | 0.00023 | 0.01378 | +60× |
-| Ratio Var (pre) | 0.0000000 | 0.0000000 | 0 (unchanged) |
-| Ratio Var (post) | 0.0000816 | 0.0176757 | +216× |
-| Abs Logprob Move | 0.00176 | 0.01584 | +9× |
-
-### Observations from Plots
-
-- **Logprob movement** spikes to 0.07–0.13 in the first few updates (large initial gradient from SFT checkpoint), then decays and stabilises at ~0.015–0.020 steady state — about 10× larger than the LR=1e-6 baseline.
-- **Clip fraction** (post-update, not visible in the plot which tracks pre-update) is now a measurable 1.4% on average. At LR=1e-6 it was ~0. This shows the higher LR moves the policy enough within a single step to push some token ratios outside ε=0.2.
-- **Pre-update ratio variance = 0.0 exactly** across all seeds — rescoring continues to perfectly eliminate the fp16/fp32 numerical gap regardless of learning rate. This is the core H1 mitigation result and it holds.
-- **Eval reward and pass@1 curves are flat or slightly declining**. The higher learning rate does not improve task performance and seed 2 degraded noticeably (eval reward 0.568, pass@1 0.360), suggesting the policy is near a local basin and larger steps introduce noise rather than useful signal.
+| Metric | Sync | Mismatch | Rescored |
+|--------|------|----------|----------|
+| Eval Reward | 0.732 | **0.743** | 0.673 |
+| Eval Pass@1 | 0.480 | **0.487** | 0.420 |
+| Clip Frac (pre) | 0.00000 | 0.00000 | 0.00000 |
+| Clip Frac (post) | 0.01636 | 0.01580 | 0.01378 |
+| Ratio Var (pre) | 0.0000000 | **0.0000376** | 0.0000000 |
+| Logprob Move (steady) | 0.01630 | 0.01678 | 0.01584 |
 
 ### Interpretation
 
-Higher LR activates the PPO clipping mechanism (post-update clip fraction ~1.4%) and makes policy updates 10× larger, which provides a stronger signal for stability comparisons. However, it does not improve task performance — if anything, the noisier updates slightly hurt eval metrics, with seed 2 showing a clear performance drop relative to LR=1e-6.
+**H1 confirmed at LR=1e-5:**
+- Mismatch pre-update ratio variance (0.0000376) is nonzero and consistent across all three seeds — the fp16/fp32 numerical gap is detectable regardless of learning rate. The value is slightly higher than at LR=1e-6 (0.0000213), consistent with a larger policy moving further from its fp16-computed logprob baseline.
+- Pre-update clip fraction = 0 for mismatch — the ratio inflation from fp16/fp32 drift (~0.000038 variance) is too small to push individual token ratios outside ε=0.2 before the gradient step. Mismatch corrupts the gradient signal without triggering clipping directly.
+- Rescored pre-update ratio variance = 0.0 exactly — recomputing logprobs in fp32 before the update fully eliminates the numerical gap at LR=1e-5 just as at LR=1e-6.
+- Post-update clip fractions are similar across all three conditions (~1.4–1.6%), driven by the gradient step size rather than drift.
 
-Rescoring's core property holds at both LRs: pre-update ratio variance is exactly zero because old logprobs are recomputed in fp32 before the update. This validates rescoring as a robust mitigation. The mismatch re-run (pending) will show whether the pre-update ratio variance is similarly affected or amplified at LR=1e-5.
+**Task performance:** Mismatch (0.743/0.487) matches or slightly exceeds sync (0.732/0.480), showing fp16 noise does not impair learning at this scale. Rescored mean (0.673/0.420) is pulled down by seed 2 (0.568/0.360); seeds 0 and 1 are within normal range (0.710–0.740). The rescored mean should be interpreted with this outlier in mind.
 
 ---
 
@@ -391,7 +397,7 @@ Full stale_mismatch sweep at LR=1e-5, 200 updates, across L ∈ {2, 4, 8} × see
 
 | Hypothesis | Status | Evidence |
 |------------|--------|----------|
-| **H1**: Logprob mismatch increases ratio noise | ✅ Supported | Mismatch shows pre-update ratio variance 0.0000213 vs 0 for sync; rescoring fully eliminates it |
+| **H1**: Logprob mismatch increases ratio noise | ✅ Supported | Mismatch pre-update ratio variance 0.0000376 (LR=1e-5) vs 0 for sync/rescored; confirmed at both LRs; rescoring fully eliminates it |
 | **H2**: Staleness introduces off-policy bias | ✅ Strongly supported | Pre-update clip fraction scales monotonically from 0% (sync) to 5.3% (L=8); pre-update ratio variance grows 20× from L=1 to L=8; logprob movement grows 3× |
 | **H3**: Combined drift reduces task performance | ⚠️ Partially supported | stale+mismatch L=4 (0.710/0.447) and L=8 (0.719/0.453) are the only conditions below sync (0.732/0.480); stale-only at same lags does not degrade — mismatch is the differentiating factor |
 

@@ -948,7 +948,11 @@ def main(args):
     snapshot_queue = deque(maxlen=max(1, args.lag + 1))
     snapshot_queue.append(clone_state_to_cpu(policy))
 
-    run_name = f"live_ppo_{args.condition}_{args.task}_seed{args.seed}"
+    # Include lag in run_name for staleness conditions to avoid overwriting
+    if args.condition in ("stale", "stale_mismatch"):
+        run_name = f"live_ppo_{args.condition}_lag{args.lag}_{args.task}_seed{args.seed}"
+    else:
+        run_name = f"live_ppo_{args.condition}_{args.task}_seed{args.seed}"
     if args.run_name:
         run_name = args.run_name
     run_dir = os.path.join(args.output_dir, run_name)

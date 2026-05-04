@@ -4,8 +4,8 @@
 execution reward, run staleness sweeps, and validate the stability degradation hypothesis.
 Scoped to single-process simulation at GPT-2 scale.
 
-**Current status:** WikiSQL utilities and SFT warm-start script are complete. Next step is
-to run SFT training and integrate WikiSQL into the live PPO harness.
+**Current status:** WikiSQL utilities, SFT warm-start, and sync PPO baseline runs are complete.
+Next step is staleness and mismatch/rescoring sweeps with replication.
 
 **Milestone results (complete):** DPO baseline, logprob parity test, simulated staleness test.
 
@@ -20,7 +20,7 @@ to run SFT training and integrate WikiSQL into the live PPO harness.
 
 ---
 
-## 1. WikiSQL Task + SFT Warm-Start (Phase 1) — IN PROGRESS
+## 1. WikiSQL Task + SFT Warm-Start (Phase 1) — COMPLETE
 
 ### Why WikiSQL over JSON
 
@@ -40,8 +40,8 @@ The synthetic JSON task lacks grounding. WikiSQL provides:
 | ✅ | SQLite execution reward | `scripts/wikisql_utils.py` (`score_sql_execution()`) |
 | ✅ | SFT warm-start script | `scripts/sft_wikisql.py`, `jobs/run_sft_wikisql.sbatch` |
 | ✅ | Integrate WikiSQL into live PPO | `scripts/live_ppo_rlvr.py` (`--task wikisql --checkpoint`) |
-| ⬜ | Run SFT warm-start | `sbatch jobs/run_sft_wikisql.sbatch` |
-| ⬜ | Run PPO with WikiSQL | `sbatch jobs/run_ppo_wikisql.sbatch` |
+| ✅ | Run SFT warm-start | `sbatch jobs/run_sft_wikisql.sbatch` |
+| ✅ | Run PPO with WikiSQL | `sbatch jobs/run_ppo_wikisql.sbatch` |
 
 **Reward structure:**
 - 1.0 = generated SQL executes to same answer as gold
@@ -58,9 +58,9 @@ The synthetic JSON task lacks grounding. WikiSQL provides:
 
 ---
 
-## 2. Sync PPO Baseline (Phase 2)
+## 2. Sync PPO Baseline (Phase 2) — IN PROGRESS
 
-- [ ] Run sync PPO (L=0, fp32 consistent) from SFT checkpoint
+- [x] Run sync PPO (L=0, fp32 consistent) from SFT checkpoint
 - [ ] Confirm stable training: reward improves, execution accuracy increases
 - [ ] Verify metrics are logged correctly: execution accuracy, valid SQL rate, clip fraction, entropy
 
@@ -133,8 +133,8 @@ Goal: statistical credibility over breadth.
 1. ~~WikiSQL data + utilities~~ ✅ `scripts/wikisql_utils.py`, `scripts/download_wikisql.sh`
 2. ~~SFT warm-start script~~ ✅ `scripts/sft_wikisql.py`, `jobs/run_sft_wikisql.sbatch`
 3. ~~Integrate WikiSQL into live PPO~~ ✅ `scripts/live_ppo_rlvr.py`, `jobs/run_ppo_wikisql.sbatch`
-4. Run SFT warm-start: `sbatch jobs/run_sft_wikisql.sbatch` (in progress)
-5. Run sync PPO baseline: `sbatch jobs/run_ppo_wikisql.sbatch`
+4. ~~Run SFT warm-start: `sbatch jobs/run_sft_wikisql.sbatch`~~ ✅
+5. ~~Run sync PPO baseline: `sbatch jobs/run_ppo_wikisql.sbatch`~~ ✅
 6. Staleness sweep L ∈ {0, 1, 2, 4} (H2, core contribution)
 7. Mismatch and rescoring (H1, core contribution)
 8. Replication over seeds
